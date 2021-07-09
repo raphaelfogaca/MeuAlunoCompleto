@@ -1,0 +1,23 @@
+{
+    "CNPJ_CPF": "12345678910",
+    "RazaoSocial": "Empresa Raphael",
+    "Telefone": "3563-3436",
+    "Endereco": {
+        "Logradouro":"Av. das Araucarias",
+        "Numero": "1325",
+        "Complemento": "Apt 407A",
+        "Bairro": "Sul",
+        "Cidade": "Aguas Claras",
+        "Estado": "DF",
+        "CEP": "71936-250"
+    },
+    "Pessoa": [
+        {
+        "CPF": "02496340150",
+        "Nome": "Raphael Borges Fogaça",
+        "Email": "raphaelfogaca@hotmail.com",
+        "DataNascimento": "1989-04-28",
+        "Telefone": "61-99939-3956"        
+    }  
+    ]
+}
