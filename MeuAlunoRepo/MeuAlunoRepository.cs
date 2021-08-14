@@ -41,19 +41,16 @@ namespace MeuAlunoRepo
             IQueryable<Pessoa> query = _context.Pessoas.Where(e => e.EmpresaId == id);
             return query.ToList();
         }
-
         public List<Aluno> BuscarAlunoPorNome(string nome)
         {
             IQueryable<Aluno> query = _context.Alunos.Where(a => a.Nome.Contains(nome));           
             return query.ToList();
-        }
-        
+        }        
         public Task<Aluno[]> BuscarTodosAlunos()
         {
             IQueryable<Aluno> query = _context.Alunos;
             return query.ToArrayAsync();
         }
-
         public Usuario Login(Usuario usuario)
         {
             Usuario query = _context.Usuarios.FirstOrDefault(a => a.Login == usuario.Login && a.Senha == usuario.Senha);
@@ -62,19 +59,16 @@ namespace MeuAlunoRepo
             query.Empresa = null;
             return query;            
         }
-
         public List<Servico> BuscarServicoPorEmpresaId(int id)
         {
             IQueryable<Servico> query = _context.Servicos.Where(s => s.EmpresaId == id);
             return query.ToList();
         }
-
         public Task<Servico[]> BuscarTodosServicos()
         {
             IQueryable<Servico> query = _context.Servicos;
             return query.ToArrayAsync();
         }
-
         public Servico BuscarServicoPorId(int id)
         {
             Servico query = _context.Servicos.FirstOrDefault(s => s.Id == id);
@@ -85,39 +79,31 @@ namespace MeuAlunoRepo
 
             return query;
         }
-
-
         public Servico BuscarServicoPorAluno(int id)
         {
             Servico query = _context.Servicos.FirstOrDefault(s => s.Id == id);
             return query;
         }
-
         public List<Aula> BuscarAulaPorEmpresa(int id)
         {
             IQueryable<Aula> query = _context.Aulas.Where(a => a.EmpresaId == id);
             return query.ToList();
         }
-
         public List<Materia> BuscarMateriaPorEmpresa(int id)
         {
             IQueryable<Materia> query = _context.Materias.Where(a => a.EmpresaId == id);
             return query.ToList();
         }
-
         public List<MateriaAluno> BuscarMateriaPorAluno(int id)
         {
             IQueryable<MateriaAluno> query = _context.MateriaAluno.Where(m => m.AlunoId == id);
             return query.ToList();
         }
-
         public List<MateriaAluno> BuscarMateriaPorId(int id)
         {
             IQueryable<MateriaAluno> query = _context.MateriaAluno.Where(m => m.MateriaId == id);
             return query.ToList();
         }
-
-
         public Empresa BuscarEmpresaPorId(int id)
         {
             Empresa query = _context.Empresas.FirstOrDefault(e => e.Id == id);
@@ -125,7 +111,6 @@ namespace MeuAlunoRepo
             query.Pessoas = BuscarPessoasPorEmpresaId(id);
             return query;
         }
-
         public Aluno BuscarAlunoPorId(int? id)
         {
             Aluno query = _context.Alunos.FirstOrDefault(a => a.Id == id);            
@@ -134,7 +119,6 @@ namespace MeuAlunoRepo
             query.Servico = BuscarServicoPorAluno(query.ServicoId);
             return query;
         }
-
         public List<ServicoAula> BuscarServicoAula(int id)
         {
             IQueryable<ServicoAula> query = _context.ServicoAula.Where(s => s.ServicoId == id);

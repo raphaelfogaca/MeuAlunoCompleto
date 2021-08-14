@@ -42,7 +42,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var servicos =  _repo.BuscarServicoPorId(id);
+                var servicos = _repo.BuscarServicoPorId(id);
                 return Ok(servicos);
             }
             catch (Exception ex)
@@ -73,23 +73,65 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                _repo.Add(model);
-                if (await _repo.SaveChangesAsync())
+
+                if (model.Id > 0)
                 {
-                    return Ok("Serviço cadastrado");
+                    List<ServicoAula> servicoAulas,servicoAulasDoServico = new List<ServicoAula>();
+                    servicoAulasDoServico = _repo.BuscarServicoAula(model.Id);
+                    servicoAulas = model.ServicosAulas;
+                    int index = 0;
+                    ServicoAula servico = new ServicoAula();
+                    foreach (var x in model.ServicosAulas.ToList())
+                    {   //buscar serivocAula e atualizar Id no model
+                        if ((servicoAulasDoServico.FirstOrDefault(x => x.AulaId == model.ServicosAulas[index].AulaId)) != null)
+                        {
+                            model.ServicosAulas[index] = servicoAulasDoServico.FirstOrDefault(x => x.AulaId == model.ServicosAulas[index].AulaId);
+                            model.ServicosAulas[index].Id = servicoAulas[index].Id;
+                        }
+                        index++;
+                    }
+
+                    foreach (var servicoaula in servicoAulasDoServico)
+                    {                        
+                        if ((servicoAulas.FirstOrDefault(x => x.Id == servicoaula.Id)) == null)
+                        {                           
+                            _repo.Delete(servicoaula);
+                            await _repo.SaveChangesAsync();
+                        }
+                    }
+
+                    _repo.Update(model);
+                    if(await _repo.SaveChangesAsync())
+                    {
+                        return Ok("Serviço atualizado");
+                    }
+                    else
+                    {
+                        return Ok("Serviço não atualizado");
+                    }
+                   
                 }
                 else
                 {
-                    return Ok("Serviço não cadastrado");
+                    _repo.Add(model);
+                    if (await _repo.SaveChangesAsync())
+                    {
+                        return Ok("Serviço cadastrado");
+                    }
+                    else
+                    {
+                        return Ok("Serviço não cadastrado");
+                    }
                 }
+
             }
             catch (Exception ex)
             {
 
                 return Ok("Erro ao cadastrar: " + ex);
             }
-        
-    }
+
+        }
 
         // PUT api/<ServicoController>/5
         [HttpPut("{id}")]

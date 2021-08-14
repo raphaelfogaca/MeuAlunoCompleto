@@ -72,8 +72,7 @@ namespace MeuAluno.Controllers
                     int index = 0;
                     //pegar dados completos do MateriaAluno e colocar no model para que nao seja inserido um novo
                     foreach (var x in model.MateriaAlunos.ToList())
-                    {                        
-                           
+                    {                           
                             if((materias.FirstOrDefault(x => x.MateriaId == model.MateriaAlunos[index].MateriaId)) != null)
                             {
                             model.MateriaAlunos[index] = materias.FirstOrDefault(e => e.MateriaId == model.MateriaAlunos[index].MateriaId);
