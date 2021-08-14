@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace MeuAlunoDominio
@@ -8,6 +9,8 @@ namespace MeuAlunoDominio
     {
         public int Id { get; set; }
         public string Nome { get; set; }
+        
+        [Column(TypeName="date")]
         public DateTime DataNascimento { get; set; }
         public int Serie { get; set; }
         public string NomeResponsavel { get; set; }

@@ -17,8 +17,11 @@ namespace MeuAlunoRepo
         Aluno BuscarAlunoPorId(int? id);
         Task<Aluno[]> BuscarTodosAlunos();
         Usuario Login(Usuario usuario);
-        List<Servico> BuscarServicoPorEmpresa(int id);
+        List<Servico> BuscarServicoPorEmpresaId(int id);
+        Task<Servico[]> BuscarTodosServicos();
+        Servico BuscarServicoPorId(int id);
         List<Aula> BuscarAulaPorEmpresa(int id);
+        List<ServicoAula> BuscarServicoAula(int id);
         List<Materia> BuscarMateriaPorEmpresa(int id);
         List<MateriaAluno> BuscarMateriaPorId(int id);
         List<MateriaAluno> BuscarMateriaPorAluno(int id);

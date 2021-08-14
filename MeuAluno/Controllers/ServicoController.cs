@@ -19,20 +19,45 @@ namespace MeuAluno.Controllers
         {
             _repo = repo;
         }
-        // GET: api/<ServicoController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<ServicoController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id) //buscar pelo Id da Empresa
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var servicos =  _repo.BuscarServicoPorEmpresa(id);
+                var servicos = await _repo.BuscarTodosServicos();
+                return Ok(servicos);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok("Erro:" + ex);
+            }
+
+        }
+
+        // GET api/<ServicoController>/5
+        [Route("/api/servico/{id:int}")]
+        public IActionResult GetById(int id) //buscar pelo Id
+        {
+            try
+            {
+                var servicos =  _repo.BuscarServicoPorId(id);
+                return Ok(servicos);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok("Erro:" + ex);
+            }
+        }
+
+        [Route("/api/servicoPorEmpresa/{id:int}")]
+        public IActionResult GetByEmpresaId(int id) //buscar pelo Id
+        {
+            try
+            {
+                var servicos = _repo.BuscarServicoPorEmpresaId(id);
                 return Ok(servicos);
             }
             catch (Exception ex)
