@@ -19,15 +19,30 @@ namespace MeuAluno.Controllers
         public MateriaController(IMeuAlunoRepository repo)
         {
             _repo = repo;
-        }        
-        
+        }
+
         // GET api/<MateriaController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id) //buscar pelo Id da Empresa
+        [Route("/api/materiaPorEmpresa/{id:int}")]
+        public IActionResult GetByEmpresaId(int id) //buscar pelo Id da Empresa
         {
             try
             {
                 var materias = _repo.BuscarMateriaPorEmpresa(id);
+                return Ok(materias);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok("Erro:" + ex);
+            }
+        }
+        // GET api/<MateriaController>/5
+        [Route("/api/materia/{id:int}")]
+        public IActionResult GetById(int id) //buscar pelo Id da materia
+        {
+            try
+            {
+                var materias = _repo.BuscarMateriaPorId(id);
                 return Ok(materias);
             }
             catch (Exception ex)
@@ -43,14 +58,30 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                _repo.Add(model);
-                if(await _repo.SaveChangesAsync())
+                if(model.Id > 0)
                 {
-                    return Ok("Matéria cadastrada");
+                    _repo.Update(model);
+                    if (await _repo.SaveChangesAsync())
+                    {
+                        return Ok("Matéria atualizada");
+                    }
+                    else
+                    {
+                        return Ok("Matéria não atualizada");
+                    }
                 } else
                 {
-                    return Ok("Matéria não cadastrada");
+                    _repo.Add(model);
+                    if (await _repo.SaveChangesAsync())
+                    {
+                        return Ok("Matéria cadastrada");
+                    }
+                    else
+                    {
+                        return Ok("Matéria não cadastrada");
+                    }
                 }
+               
             }
             catch (Exception ex)
             {

@@ -29,9 +29,17 @@ namespace MeuAluno.Controllers
 
         // GET: api/<EmpresaController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+           try
+            {
+                var empresas = await _repo.BuscarTodasEmpresas();
+                return Ok(empresas);
+            }
+            catch (Exception ex)
+            {
+                return Ok("Erro:" + ex);
+            }
         }
 
         // GET api/<EmpresaController>/5
