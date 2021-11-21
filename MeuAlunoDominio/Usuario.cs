@@ -14,5 +14,6 @@ namespace MeuAlunoDominio
         public Pessoa Pessoa { get; set; }
         public int EmpresaId { get; set; }
         public Empresa Empresa { get; set; }
+        public int TipoUsuario { get; set; }
     }
 }

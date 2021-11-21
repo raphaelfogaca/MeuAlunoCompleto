@@ -8,7 +8,7 @@ namespace MeuAlunoDominio
     {
         public int Id { get; set; }
         public string Descricao { get; set; }
-        public double Valor { get; set; }
+        public decimal Valor { get; set; }
         public int QtdAulas { get; set; }       
         public bool Fidelidade  { get; set; }
         public int TipoMulta { get; set; }

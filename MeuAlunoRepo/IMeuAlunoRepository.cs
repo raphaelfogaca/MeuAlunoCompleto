@@ -24,6 +24,9 @@ namespace MeuAlunoRepo
         List<Aula> BuscarAulaPorEmpresa(int id);
         List<ServicoAula> BuscarServicoAula(int id);
         List<Materia> BuscarMateriaPorEmpresa(int id);
+        Task<FinanceiroModelo[]> BuscarFinanceiroPorEmpresaId(int empresaId);
+        FinanceiroModelo BuscarFinanceiroPorId(int id);
+        List<Aluno> BuscarAlunosPorEmpresaid(int empresaId);
         Materia BuscarMateriaPorId(int id);
         List<MateriaAluno> BuscarMateriaPorAluno(int id);
         Aula BuscarAulaPorId(int id);

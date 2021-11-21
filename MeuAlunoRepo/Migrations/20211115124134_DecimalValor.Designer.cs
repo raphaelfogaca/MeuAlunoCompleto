@@ -4,14 +4,16 @@ using MeuAlunoRepo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeuAlunoRepo.Migrations
 {
     [DbContext(typeof(MeuAlunoContext))]
-    partial class MeuAlunoContextModelSnapshot : ModelSnapshot
+    [Migration("20211115124134_DecimalValor")]
+    partial class DecimalValor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -18,7 +18,7 @@ namespace MeuAlunoRepo
        public DbSet<Usuario> Usuarios { get; set; }
        public DbSet<MateriaAluno> MateriaAluno { get; set; }
        public DbSet<ServicoAula> ServicoAula { get; set; }
-       
+       public DbSet<Financeiro> Financeiros { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

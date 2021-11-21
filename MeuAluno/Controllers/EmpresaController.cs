@@ -63,7 +63,15 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                _repo.Add(model);
+                if(model.Id > 0)
+                {
+                  model.Pessoas = null;
+                  _repo.Update(model);
+                } else
+                {
+                  _repo.Add(model);
+                }
+                
                 if (await _repo.SaveChangesAsync())
                 { return Ok("Empresa cadastrada com sucesso"); }
                 else

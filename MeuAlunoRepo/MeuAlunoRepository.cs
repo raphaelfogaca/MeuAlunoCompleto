@@ -133,7 +133,47 @@ namespace MeuAlunoRepo
         {
             return _context.Aulas.FirstOrDefault(a => a.Id == id);
         }
+        public Task<FinanceiroModelo[]> BuscarFinanceiroPorEmpresaId(int empresaId)
+        {
+            IQueryable<FinanceiroModelo> query = (IQueryable<FinanceiroModelo>)_context.Financeiros.Where(x => x.EmpresaId == empresaId)
+                .Select(s => new FinanceiroModelo() {
+                    Id = s.Id,
+                    AlunoId = s.AlunoId,
+                    DataVencimento = s.DataVencimento,
+                    Situacao = s.Situacao,
+                    EmpresaId = s.EmpresaId,
+                    FormaPagamento = s.FormaPagamento,
+                    Valor = s.Valor,                    
+                    NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
+        });          
 
-       
+            return query.ToArrayAsync();
+        }
+
+        public FinanceiroModelo BuscarFinanceiroPorId(int id)
+        {
+             IQueryable<FinanceiroModelo> query = _context.Financeiros.Where(x => x.Id == id)
+                .Select(s => new FinanceiroModelo()
+                {
+                    Id = s.Id,
+                    AlunoId = s.AlunoId,
+                    DataVencimento = s.DataVencimento,
+                    Situacao = s.Situacao,
+                    EmpresaId = s.EmpresaId,
+                    FormaPagamento = s.FormaPagamento,
+                    Valor = s.Valor,
+                    NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
+                });
+            return query.FirstOrDefault();
+        }
+
+        public List<Aluno> BuscarAlunosPorEmpresaid(int empresaId)
+        {
+            IQueryable<Aluno> query = _context.Alunos.Where(x => x.EmpresaId == empresaId);
+            return query.ToList();
+        }
+        
     }
 }
+
+

@@ -4,14 +4,16 @@ using MeuAlunoRepo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeuAlunoRepo.Migrations
 {
     [DbContext(typeof(MeuAlunoContext))]
-    partial class MeuAlunoContextModelSnapshot : ModelSnapshot
+    [Migration("20210919213245_TipoUsuario")]
+    partial class TipoUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,36 +160,6 @@ namespace MeuAlunoRepo.Migrations
                     b.ToTable("Enderecos");
                 });
 
-            modelBuilder.Entity("MeuAlunoDominio.Financeiro", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("AlunoId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataVencimento")
-                        .HasColumnType("date");
-
-                    b.Property<int>("EmpresaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FormaPagamento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Situacao")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Financeiros");
-                });
-
             modelBuilder.Entity("MeuAlunoDominio.Materia", b =>
                 {
                     b.Property<int>("Id")
@@ -284,8 +256,8 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<int>("TipoMulta")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Valor")
+                        .HasColumnType("float");
 
                     b.Property<double>("ValorMulta")
                         .HasColumnType("float");
