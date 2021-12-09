@@ -177,7 +177,13 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<string>("FormaPagamento")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PessoaNome")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Valor")

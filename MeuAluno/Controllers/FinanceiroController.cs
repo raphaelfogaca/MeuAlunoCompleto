@@ -99,9 +99,10 @@ namespace MeuAluno.Controllers
                 {
                     return Ok("Erro ao gerar CRE.");
                 }
-                else return Ok("CRE gerado com sucesso.");
-
-
+                else
+                {
+                    return Ok("CRE gerado com sucesso.");
+                }
             }
             catch (Exception ex)
             {

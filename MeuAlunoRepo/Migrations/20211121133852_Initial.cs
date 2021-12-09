@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MeuAlunoRepo.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,6 +24,24 @@ namespace MeuAlunoRepo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Enderecos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Financeiros",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataVencimento = table.Column<DateTime>(type: "date", nullable: false),
+                    Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AlunoId = table.Column<int>(type: "int", nullable: false),
+                    FormaPagamento = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Situacao = table.Column<int>(type: "int", nullable: false),
+                    EmpresaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Financeiros", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,6 +67,49 @@ namespace MeuAlunoRepo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Aulas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Dia = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Vagas = table.Column<int>(type: "int", nullable: false),
+                    HoraInicio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoraFim = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmpresaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Aulas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Aulas_Empresas_EmpresaId",
+                        column: x => x.EmpresaId,
+                        principalTable: "Empresas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmpresaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Materias_Empresas_EmpresaId",
+                        column: x => x.EmpresaId,
+                        principalTable: "Empresas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pessoas",
                 columns: table => new
                 {
@@ -69,7 +130,7 @@ namespace MeuAlunoRepo.Migrations
                         column: x => x.EmpresaId,
                         principalTable: "Empresas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,9 +140,8 @@ namespace MeuAlunoRepo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Valor = table.Column<double>(type: "float", nullable: false),
+                    Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     QtdAulas = table.Column<int>(type: "int", nullable: false),
-                    Duracao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Fidelidade = table.Column<bool>(type: "bit", nullable: false),
                     TipoMulta = table.Column<int>(type: "int", nullable: false),
                     ValorMulta = table.Column<double>(type: "float", nullable: false),
@@ -95,7 +155,7 @@ namespace MeuAlunoRepo.Migrations
                         column: x => x.EmpresaId,
                         principalTable: "Empresas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,8 +167,9 @@ namespace MeuAlunoRepo.Migrations
                     Login = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Senha = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Ativo = table.Column<bool>(type: "bit", nullable: false),
-                    PessoaId = table.Column<int>(type: "int", nullable: true),
-                    EmpresaId = table.Column<int>(type: "int", nullable: true)
+                    PessoaId = table.Column<int>(type: "int", nullable: false),
+                    EmpresaId = table.Column<int>(type: "int", nullable: false),
+                    TipoUsuario = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,13 +179,13 @@ namespace MeuAlunoRepo.Migrations
                         column: x => x.EmpresaId,
                         principalTable: "Empresas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Usuarios_Pessoas_PessoaId",
                         column: x => x.PessoaId,
                         principalTable: "Pessoas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,14 +195,15 @@ namespace MeuAlunoRepo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataNascimento = table.Column<DateTime>(type: "date", nullable: false),
                     Serie = table.Column<int>(type: "int", nullable: false),
                     NomeResponsavel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CPFResponsavel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailResponsavel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TelefoneResponsavel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnderecoId = table.Column<int>(type: "int", nullable: true),
-                    ServicoId = table.Column<int>(type: "int", nullable: true),
+                    Escola = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnderecoId = table.Column<int>(type: "int", nullable: false),
+                    ServicoId = table.Column<int>(type: "int", nullable: false),
                     EmpresaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -152,76 +214,71 @@ namespace MeuAlunoRepo.Migrations
                         column: x => x.EmpresaId,
                         principalTable: "Empresas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Alunos_Enderecos_EnderecoId",
                         column: x => x.EnderecoId,
                         principalTable: "Enderecos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Alunos_Servicos_ServicoId",
                         column: x => x.ServicoId,
                         principalTable: "Servicos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Aulas",
+                name: "ServicoAula",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Dia = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Vagas = table.Column<int>(type: "int", nullable: false),
-                    HoraInicio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HoraFim = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmpresaId = table.Column<int>(type: "int", nullable: false),
-                    ServicoId = table.Column<int>(type: "int", nullable: true)
+                    AulaId = table.Column<int>(type: "int", nullable: false),
+                    ServicoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Aulas", x => x.Id);
+                    table.PrimaryKey("PK_ServicoAula", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Aulas_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
+                        name: "FK_ServicoAula_Aulas_AulaId",
+                        column: x => x.AulaId,
+                        principalTable: "Aulas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Aulas_Servicos_ServicoId",
+                        name: "FK_ServicoAula_Servicos_ServicoId",
                         column: x => x.ServicoId,
                         principalTable: "Servicos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materias",
+                name: "MateriaAluno",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmpresaId = table.Column<int>(type: "int", nullable: true),
-                    AlunoId = table.Column<int>(type: "int", nullable: true)
+                    AlunoId = table.Column<int>(type: "int", nullable: false),
+                    MateriaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Materias", x => x.Id);
+                    table.PrimaryKey("PK_MateriaAluno", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Materias_Alunos_AlunoId",
+                        name: "FK_MateriaAluno_Alunos_AlunoId",
                         column: x => x.AlunoId,
                         principalTable: "Alunos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Materias_Empresas_EmpresaId",
-                        column: x => x.EmpresaId,
-                        principalTable: "Empresas",
+                        name: "FK_MateriaAluno_Materias_MateriaId",
+                        column: x => x.MateriaId,
+                        principalTable: "Materias",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -245,19 +302,19 @@ namespace MeuAlunoRepo.Migrations
                 column: "EmpresaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Aulas_ServicoId",
-                table: "Aulas",
-                column: "ServicoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Empresas_EnderecoId",
                 table: "Empresas",
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Materias_AlunoId",
-                table: "Materias",
+                name: "IX_MateriaAluno_AlunoId",
+                table: "MateriaAluno",
                 column: "AlunoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MateriaAluno_MateriaId",
+                table: "MateriaAluno",
+                column: "MateriaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Materias_EmpresaId",
@@ -268,6 +325,16 @@ namespace MeuAlunoRepo.Migrations
                 name: "IX_Pessoas_EmpresaId",
                 table: "Pessoas",
                 column: "EmpresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicoAula_AulaId",
+                table: "ServicoAula",
+                column: "AulaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicoAula_ServicoId",
+                table: "ServicoAula",
+                column: "ServicoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Servicos_EmpresaId",
@@ -288,16 +355,25 @@ namespace MeuAlunoRepo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Aulas");
+                name: "Financeiros");
 
             migrationBuilder.DropTable(
-                name: "Materias");
+                name: "MateriaAluno");
+
+            migrationBuilder.DropTable(
+                name: "ServicoAula");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Alunos");
+
+            migrationBuilder.DropTable(
+                name: "Materias");
+
+            migrationBuilder.DropTable(
+                name: "Aulas");
 
             migrationBuilder.DropTable(
                 name: "Pessoas");

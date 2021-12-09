@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeuAlunoRepo.Migrations
 {
     [DbContext(typeof(MeuAlunoContext))]
-    [Migration("20210118005459_NovaClasseMateriaAluno")]
-    partial class NovaClasseMateriaAluno
+    [Migration("20211127152412_PessoaNome")]
+    partial class PessoaNome
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,7 @@ namespace MeuAlunoRepo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataNascimento")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("EmailResponsavel")
                         .HasColumnType("nvarchar(max)");
@@ -40,8 +40,11 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EnderecoId")
+                    b.Property<int>("EnderecoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Escola")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
@@ -88,17 +91,12 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<string>("HoraInicio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ServicoId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Vagas")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId");
-
-                    b.HasIndex("ServicoId");
 
                     b.ToTable("Aulas");
                 });
@@ -113,7 +111,7 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<string>("CNPJ_CPF")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EnderecoId")
+                    b.Property<int?>("EnderecoId")
                         .HasColumnType("int");
 
                     b.Property<string>("RazaoSocial")
@@ -160,6 +158,42 @@ namespace MeuAlunoRepo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Enderecos");
+                });
+
+            modelBuilder.Entity("MeuAlunoDominio.Financeiro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AlunoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataVencimento")
+                        .HasColumnType("date");
+
+                    b.Property<int>("EmpresaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FormaPagamento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PessoaNome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Situacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Financeiros");
                 });
 
             modelBuilder.Entity("MeuAlunoDominio.Materia", b =>
@@ -246,9 +280,6 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<string>("Descricao")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Duracao")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
@@ -261,8 +292,8 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<int>("TipoMulta")
                         .HasColumnType("int");
 
-                    b.Property<double>("Valor")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<double>("ValorMulta")
                         .HasColumnType("float");
@@ -272,6 +303,28 @@ namespace MeuAlunoRepo.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.ToTable("Servicos");
+                });
+
+            modelBuilder.Entity("MeuAlunoDominio.ServicoAula", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AulaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServicoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AulaId");
+
+                    b.HasIndex("ServicoId");
+
+                    b.ToTable("ServicoAula");
                 });
 
             modelBuilder.Entity("MeuAlunoDominio.Usuario", b =>
@@ -296,6 +349,9 @@ namespace MeuAlunoRepo.Migrations
                     b.Property<string>("Senha")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TipoUsuario")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId");
@@ -315,7 +371,9 @@ namespace MeuAlunoRepo.Migrations
 
                     b.HasOne("MeuAlunoDominio.Endereco", "Endereco")
                         .WithMany()
-                        .HasForeignKey("EnderecoId");
+                        .HasForeignKey("EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MeuAlunoDominio.Servico", "Servico")
                         .WithMany()
@@ -338,10 +396,6 @@ namespace MeuAlunoRepo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MeuAlunoDominio.Servico", null)
-                        .WithMany("Aulas")
-                        .HasForeignKey("ServicoId");
-
                     b.Navigation("Empresa");
                 });
 
@@ -349,9 +403,7 @@ namespace MeuAlunoRepo.Migrations
                 {
                     b.HasOne("MeuAlunoDominio.Endereco", "Endereco")
                         .WithMany()
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnderecoId");
 
                     b.Navigation("Endereco");
                 });
@@ -408,6 +460,25 @@ namespace MeuAlunoRepo.Migrations
                     b.Navigation("Empresa");
                 });
 
+            modelBuilder.Entity("MeuAlunoDominio.ServicoAula", b =>
+                {
+                    b.HasOne("MeuAlunoDominio.Aula", "Aula")
+                        .WithMany()
+                        .HasForeignKey("AulaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MeuAlunoDominio.Servico", "Servico")
+                        .WithMany("ServicosAulas")
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Aula");
+
+                    b.Navigation("Servico");
+                });
+
             modelBuilder.Entity("MeuAlunoDominio.Usuario", b =>
                 {
                     b.HasOne("MeuAlunoDominio.Empresa", "Empresa")
@@ -444,7 +515,7 @@ namespace MeuAlunoRepo.Migrations
 
             modelBuilder.Entity("MeuAlunoDominio.Servico", b =>
                 {
-                    b.Navigation("Aulas");
+                    b.Navigation("ServicosAulas");
                 });
 #pragma warning restore 612, 618
         }

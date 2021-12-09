@@ -13,9 +13,11 @@ namespace MeuAlunoDominio
         public DateTime DataVencimento { get; set; }
         public decimal Valor { get; set; }
         public int AlunoId { get; set; }
+        public string PessoaNome { get; set; }
         public string FormaPagamento { get; set; }
         public int Situacao { get; set; }
         public int EmpresaId { get; set; }
+        public int Tipo { get; set; }
     }
 
 }

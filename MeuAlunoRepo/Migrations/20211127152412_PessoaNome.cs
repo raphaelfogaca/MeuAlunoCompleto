@@ -2,12 +2,18 @@
 
 namespace MeuAlunoRepo.Migrations
 {
-    public partial class FinanceiroEmpresaId : Migration
+    public partial class PessoaNome : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "PessoaNome",
+                table: "Financeiros",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
-                name: "EmpresaId",
+                name: "Tipo",
                 table: "Financeiros",
                 type: "int",
                 nullable: false,
@@ -17,7 +23,11 @@ namespace MeuAlunoRepo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "EmpresaId",
+                name: "PessoaNome",
+                table: "Financeiros");
+
+            migrationBuilder.DropColumn(
+                name: "Tipo",
                 table: "Financeiros");
         }
     }
