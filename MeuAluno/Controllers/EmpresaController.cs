@@ -17,10 +17,6 @@ namespace MeuAluno.Controllers
     {
         public MeuAlunoContext _context { get; }
 
-        //public EmpresaController(MeuAlunoContext context)
-        //{
-        //    _context = context;
-        //}
         private readonly IMeuAlunoRepository _repo;
         public EmpresaController(IMeuAlunoRepository repo)
         {
@@ -67,6 +63,7 @@ namespace MeuAluno.Controllers
                 pessoas.Add(model.Pessoa);
 
                 Empresa empresa = new Empresa();
+                empresa.Id = model.Id;
                 empresa.CNPJ_CPF = model.CNPJ_CPF;
                 empresa.RazaoSocial = model.RazaoSocial;
                 empresa.Telefone = model.Telefone;

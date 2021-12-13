@@ -30,6 +30,9 @@ namespace MeuAlunoRepo
         Materia BuscarMateriaPorId(int id);
         List<MateriaAluno> BuscarMateriaPorAluno(int id);
         Aula BuscarAulaPorId(int id);
+        Task<Pessoa[]> BuscarPessoaPorEmpresaId(int empresaId);
+        Task<UsuarioModelo[]> BuscarUsuarioPorEmpresaId(int empresaId);
+        Task<UsuarioModelo> BuscarUsuarioPorId(int id);
     }
 }
 

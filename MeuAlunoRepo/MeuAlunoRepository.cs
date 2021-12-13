@@ -34,7 +34,7 @@ namespace MeuAlunoRepo
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;
-        }       
+        }
 
         public List<Pessoa> BuscarPessoasPorEmpresaId(int id)
         {
@@ -43,9 +43,9 @@ namespace MeuAlunoRepo
         }
         public List<Aluno> BuscarAlunoPorNome(string nome)
         {
-            IQueryable<Aluno> query = _context.Alunos.Where(a => a.Nome.Contains(nome));           
+            IQueryable<Aluno> query = _context.Alunos.Where(a => a.Nome.Contains(nome));
             return query.ToList();
-        }        
+        }
         public Task<Aluno[]> BuscarTodosAlunos()
         {
             IQueryable<Aluno> query = _context.Alunos;
@@ -57,7 +57,7 @@ namespace MeuAlunoRepo
             query.Empresa = _context.Empresas.FirstOrDefault(e => e.Id == query.EmpresaId);
             query.Pessoa = _context.Pessoas.FirstOrDefault(p => p.Id == query.PessoaId);
             query.Empresa = null;
-            return query;            
+            return query;
         }
         public List<Servico> BuscarServicoPorEmpresaId(int id)
         {
@@ -74,7 +74,7 @@ namespace MeuAlunoRepo
             Servico query = _context.Servicos.FirstOrDefault(s => s.Id == id);
             if (query != null)
             {
-                query.ServicosAulas = BuscarServicoAula(id);               
+                query.ServicosAulas = BuscarServicoAula(id);
             }
 
             return query;
@@ -118,7 +118,7 @@ namespace MeuAlunoRepo
         }
         public Aluno BuscarAlunoPorId(int? id)
         {
-            Aluno query = _context.Alunos.FirstOrDefault(a => a.Id == id);            
+            Aluno query = _context.Alunos.FirstOrDefault(a => a.Id == id);
             query.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == query.EnderecoId);
             query.MateriaAlunos = BuscarMateriaPorAluno(query.Id);
             query.Servico = BuscarServicoPorAluno(query.ServicoId);
@@ -136,23 +136,6 @@ namespace MeuAlunoRepo
         public Task<FinanceiroModelo[]> BuscarFinanceiroPorEmpresaId(int empresaId)
         {
             IQueryable<FinanceiroModelo> query = (IQueryable<FinanceiroModelo>)_context.Financeiros.Where(x => x.EmpresaId == empresaId)
-                .Select(s => new FinanceiroModelo() {
-                    Id = s.Id,
-                    AlunoId = s.AlunoId,
-                    DataVencimento = s.DataVencimento,
-                    Situacao = s.Situacao,
-                    EmpresaId = s.EmpresaId,
-                    FormaPagamento = s.FormaPagamento,
-                    Valor = s.Valor,                    
-                    NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
-        });          
-
-            return query.ToArrayAsync();
-        }
-
-        public FinanceiroModelo BuscarFinanceiroPorId(int id)
-        {
-             IQueryable<FinanceiroModelo> query = _context.Financeiros.Where(x => x.Id == id)
                 .Select(s => new FinanceiroModelo()
                 {
                     Id = s.Id,
@@ -163,8 +146,26 @@ namespace MeuAlunoRepo
                     FormaPagamento = s.FormaPagamento,
                     Valor = s.Valor,
                     NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
-                    Tipo = s.Tipo,
                 });
+
+            return query.ToArrayAsync();
+        }
+
+        public FinanceiroModelo BuscarFinanceiroPorId(int id)
+        {
+            IQueryable<FinanceiroModelo> query = _context.Financeiros.Where(x => x.Id == id)
+               .Select(s => new FinanceiroModelo()
+               {
+                   Id = s.Id,
+                   AlunoId = s.AlunoId,
+                   DataVencimento = s.DataVencimento,
+                   Situacao = s.Situacao,
+                   EmpresaId = s.EmpresaId,
+                   FormaPagamento = s.FormaPagamento,
+                   Valor = s.Valor,
+                   NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
+                   Tipo = s.Tipo,
+               });
             return query.FirstOrDefault();
         }
 
@@ -173,7 +174,46 @@ namespace MeuAlunoRepo
             IQueryable<Aluno> query = _context.Alunos.Where(x => x.EmpresaId == empresaId);
             return query.ToList();
         }
-        
+
+        public Task<Pessoa[]> BuscarPessoaPorEmpresaId(int empresaId)
+        {
+            IQueryable<Pessoa> query = _context.Pessoas.Where(x => x.EmpresaId == empresaId);
+            return query.ToArrayAsync();
+        }
+
+        public Task<UsuarioModelo[]> BuscarUsuarioPorEmpresaId(int empresaId)
+        {
+            IQueryable<UsuarioModelo> query = _context.Usuarios.Where(x => x.EmpresaId == empresaId)
+               .Select(s => new UsuarioModelo()
+               {
+                   Id = s.Id,
+                   Login = s.Login,
+                   Ativo = s.Ativo,
+                   PessoaId = s.PessoaId,
+                   PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
+                   EmpresaId = s.EmpresaId,
+                   EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
+                   TipoUsuario = s.TipoUsuario
+               });
+            return query.ToArrayAsync();
+        }
+
+        public Task<UsuarioModelo> BuscarUsuarioPorId(int id)
+        {
+            IQueryable<UsuarioModelo> query = _context.Usuarios.Where(x => x.Id == id)
+                .Select(s => new UsuarioModelo()
+                {
+                    Id = s.Id,
+                    Login = s.Login,
+                    Ativo = s.Ativo,
+                    PessoaId = s.PessoaId,
+                    PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
+                    EmpresaId = s.EmpresaId,
+                    EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
+                    TipoUsuario = s.TipoUsuario
+                });
+            return query.FirstOrDefaultAsync();
+        }
     }
 }
 

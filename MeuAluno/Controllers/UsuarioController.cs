@@ -44,13 +44,75 @@ namespace MeuAluno.Controllers
             }
         }
 
+
+        [Route("/api/usuariosPorEmpresa/{empresaid:int}")]
+        public async Task<IActionResult> GetByEmpresaId(int empresaId)
+        {
+            try
+            {
+                var usuarios = await _repo.BuscarUsuarioPorEmpresaId(empresaId);
+                return Ok(usuarios);
+            }
+            catch
+            {
+                return Ok("Erro ao buscar financeiro.");
+            }
+        }
+
+        [Route("/api/usuarioPorId/{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var usuarios = await _repo.BuscarUsuarioPorId(id);
+                return Ok(usuarios);
+            }
+            catch
+            {
+                return Ok("Erro ao buscar financeiro.");
+            }
+        }
+
         // POST api/<UsuarioController>
         [HttpPost]
         public async Task<IActionResult> Post(Usuario model)
         {
+            List<string> erros = null;
             try
             {
-                var usuario =  _repo.Login(model);
+                if(model.Id > 0)
+                {
+                  _repo.Update(model);
+
+                  if (await _repo.SaveChangesAsync())
+                  {
+                    return Ok("Usuário atualizado com sucesso");
+                  }                    
+                }
+                else
+                {
+                    model.Ativo = true;
+                    _repo.Add(model);
+
+                    if (await _repo.SaveChangesAsync())
+                    {
+                        return Ok("Usuário cadastrado com sucesso");
+                    }
+                }
+                return Ok("Erro ao cadastrar ou atualizar usuário");
+            }
+            catch (Exception ex)
+            {
+                return Ok("Erro ao cadastrar: " + ex.Message);
+            }
+        }
+
+        [Route("/api/usuario/login")]
+        public IActionResult Login(Usuario model)
+        {
+            try
+            {
+                var usuario = _repo.Login(model);
                 if (usuario != null)
                 {
                     usuario.Senha = "";
