@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MeuAlunoDominio
 {
-    public class Empresa
+    public class EmpresaModelo
     {
         public int Id { get; set; }
         public string CNPJ_CPF { get; set; }
@@ -12,7 +12,7 @@ namespace MeuAlunoDominio
         public string Telefone { get; set; }
         public int? EnderecoId { get; set; }
         public Endereco Endereco { get; set; }
-        public List<Pessoa> Pessoas { get; set; }
+        public Pessoa? Pessoa { get; set; }
 
     }
 }

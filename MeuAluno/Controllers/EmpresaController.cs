@@ -31,7 +31,7 @@ namespace MeuAluno.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-           try
+            try
             {
                 var empresas = await _repo.BuscarTodasEmpresas();
                 return Ok(empresas);
@@ -59,57 +59,52 @@ namespace MeuAluno.Controllers
 
         // POST api/<EmpresaController>
         [HttpPost]
-        public async Task<IActionResult> Post(Empresa model)
+        public async Task<IActionResult> Post(EmpresaModelo model)
         {
             try
             {
-                if(model.Id > 0)
+                List<Pessoa> pessoas = new List<Pessoa>(); 
+                pessoas.Add(model.Pessoa);
+
+                Empresa empresa = new Empresa();
+                empresa.CNPJ_CPF = model.CNPJ_CPF;
+                empresa.RazaoSocial = model.RazaoSocial;
+                empresa.Telefone = model.Telefone;
+                empresa.Endereco = model.Endereco;
+                empresa.Pessoas = pessoas;               
+
+                if (empresa.Id > 0)
                 {
-                  model.Pessoas = null;
-                  _repo.Update(model);
-                } else
-                {
-                  _repo.Add(model);
+                    empresa.Pessoas = null;
+                    _repo.Update(empresa);
+                    if (await _repo.SaveChangesAsync())
+                    { return Ok("Empresa atualizada"); }
+                    else
+                    {
+                        return Ok("Erro ao cadastrar");
+                    }
                 }
-                
-                if (await _repo.SaveChangesAsync())
-                { return Ok("Empresa cadastrada com sucesso"); }
                 else
                 {
-                    return Ok("Erro ao cadastrar");
+                    _repo.Add(empresa);
+                    if (await _repo.SaveChangesAsync())
+                    { return Ok("Empresa cadastrada com sucesso"); }
+                    else
+                    {
+                        return Ok("Erro ao cadastrar");
+                    }
                 }
+
+
             }
             catch (Exception ex)
             {
 
                 return Ok("Empresa não cadastrada:" + ex);
-            }            
-        }
-
-        // PUT api/<EmpresaController>/5
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] JsonPatchDocument<Empresa> empresa)
-        {
-            try
-            {
-                var model = _repo.BuscarEmpresaPorId(id);
-                empresa.ApplyTo(model);
-                if (await _repo.SaveChangesAsync())
-                {
-                    return Ok("Empresa alterada");
-                }
-                else
-                {
-                    return Ok("Empresa não alterada");
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return Ok("erro ao editar:" + ex);
             }
         }
 
+        // PUT api/<EmpresaController>/5        
 
         // DELETE api/<EmpresaController>/5
         [HttpDelete("{id}")]
