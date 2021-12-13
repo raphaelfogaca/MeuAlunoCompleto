@@ -63,6 +63,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
+                List<string> erros = null;
                 if (model.Id > 0)
                 {                    
                     List<MateriaAluno> materias,novasMaterias = new List<MateriaAluno>();
@@ -94,8 +95,18 @@ namespace MeuAluno.Controllers
                         } 
                     }
                     _repo.Update(model);
-                } else 
-                _repo.Add(model);                
+                } else
+                {
+                    try
+                    {
+                        _repo.Add(model);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok("Erro ao cadastrar: "+ex);
+                    }
+                }
+                                
                 if (await _repo.SaveChangesAsync())
                 {
                     return Ok("Aluno cadastrado");

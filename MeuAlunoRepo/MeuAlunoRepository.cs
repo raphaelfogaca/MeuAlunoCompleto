@@ -163,6 +163,7 @@ namespace MeuAlunoRepo
                     FormaPagamento = s.FormaPagamento,
                     Valor = s.Valor,
                     NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
+                    Tipo = s.Tipo,
                 });
             return query.FirstOrDefault();
         }

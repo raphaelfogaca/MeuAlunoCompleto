@@ -56,14 +56,18 @@ namespace MeuAluno.Controllers
         }
 
         // POST api/<FinanceiroController>
-        [HttpPost]
-        //public async Task<IActionResult> Post([FromBody] JArray jObject)
+        [HttpPost]       
         public async Task<IActionResult> Post(FinanceiroModelo financeiro)
         {            
             try
             {
                 List<string> erros = null;
-
+                bool edicao = false;
+                if(financeiro.Id > 0)
+                {
+                    edicao = true;
+                }
+                financeiro.Valor /= 100;               
                 if (financeiro != null && financeiro.todosAlunos)
                 {                   
                     List<Aluno> listaAlunos = _repo.BuscarAlunosPorEmpresaid(financeiro.EmpresaId);
@@ -97,11 +101,19 @@ namespace MeuAluno.Controllers
                 }
                 if (erros != null)
                 {
+                   
                     return Ok("Erro ao gerar CRE.");
                 }
                 else
                 {
-                    return Ok("CRE gerado com sucesso.");
+                    if (edicao)
+                    {
+                        return Ok("Financeiro atualizado com sucesso.");
+                    }
+                    else
+                    {
+                        return Ok("Financeiro gerado com sucesso.");
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -114,12 +126,26 @@ namespace MeuAluno.Controllers
                 List<string> listaErros = null;
                 try
                 {
-                    _repo.Add(financeiro);
-                    var retorno = await _repo.SaveChangesAsync();
-                    if (!retorno)
+                    if (financeiro.Id > 0)
                     {
-                        listaErros.Add(retorno.ToString());
+                        _repo.Update(financeiro);
+                        var retorno = await _repo.SaveChangesAsync();
+                        if (!retorno)
+                        {
+                            listaErros.Add(retorno.ToString());
+                        }
+
                     }
+                    else
+                    {
+                        _repo.Add(financeiro);
+                        var retorno = await _repo.SaveChangesAsync();
+                        if (!retorno)
+                        {
+                            listaErros.Add(retorno.ToString());
+                        }
+                    }
+                    
                 }
                 catch (Exception ex)
                 {

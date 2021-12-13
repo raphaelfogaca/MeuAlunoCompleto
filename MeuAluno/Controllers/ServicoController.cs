@@ -73,7 +73,11 @@ namespace MeuAluno.Controllers
         {
             try
             {
-
+                model.Valor /= 100;
+                if(model.ValorMulta != null && model.ValorMulta > 0)
+                {
+                    model.ValorMulta /= 100;
+                }
                 if (model.Id > 0)
                 {
                     List<ServicoAula> servicoAulas,servicoAulasDoServico = new List<ServicoAula>();
