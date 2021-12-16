@@ -24,6 +24,24 @@ namespace MeuAluno.Controllers
             _repo = repo;
         }
         // GET: api/<AlunoController>
+
+        [Route("/api/alunoPorEmpresa/{id:int}")]
+
+        public async Task<IActionResult> GetByEmpresaId(int id)
+        {
+            try
+            {
+                var alunos = await _repo.BuscarAlunosPorEmpresaid(id);
+                return Ok(alunos);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok("Erro:" + ex);
+            }
+
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {     

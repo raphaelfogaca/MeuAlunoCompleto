@@ -40,6 +40,25 @@ namespace MeuAluno.Controllers
             }
         }
 
+
+        [Route("/api/financeiro/buscar")]
+        public async Task<IActionResult> Buscar(FinanceiroFiltros filtros)
+        {
+            try
+            {
+                var financeiros = await _repo.BuscarFinanceiroPorFiltro(filtros);
+                if (financeiros.FirstOrDefault() != null)
+                {
+                    return Ok(financeiros);
+                }
+                else return Ok("");
+            }
+            catch (Exception ex)    
+            {
+                return Ok("Erro ao buscar financeiro.");
+            }
+        }
+
         // GET api/<FinanceiroController>/5
         [Route("/api/cadastroFinanceiro/{id:int}")]
         public  IActionResult GetFinanceiroPorId(int id)
@@ -55,22 +74,28 @@ namespace MeuAluno.Controllers
             }
         }
 
-        // POST api/<FinanceiroController>
-        [HttpPost]       
-        public async Task<IActionResult> Post(FinanceiroModelo financeiro)
+             
+        [Route("/api/financeiro/cadastrar")]
+        public async Task<IActionResult> Cadastrar(FinanceiroModelo financeiro)
         {            
             try
             {
                 List<string> erros = null;
                 bool edicao = false;
-                if(financeiro.Id > 0)
+
+                if (!(financeiro.AlunoId > 0) && financeiro.PessoaNome == "" && financeiro.todosAlunos == false)
+                {                    
+                    return Ok("Erro ao gerar CRE.");
+                }
+
+                if (financeiro.Id > 0)
                 {
                     edicao = true;
                 }
                 financeiro.Valor /= 100;               
                 if (financeiro != null && financeiro.todosAlunos)
-                {                   
-                    List<Aluno> listaAlunos = _repo.BuscarAlunosPorEmpresaid(financeiro.EmpresaId);
+                {
+                    var listaAlunos = await _repo.BuscarAlunosPorEmpresaid(financeiro.EmpresaId);
                     
                     foreach (var aluno in listaAlunos)
                     {
@@ -79,14 +104,22 @@ namespace MeuAluno.Controllers
                         Aluno novoAluno = _repo.BuscarAlunoPorId(aluno.Id);
                         Servico servicoAluno = _repo.BuscarServicoPorId(novoAluno.ServicoId);
                         financeiro.Valor = servicoAluno.Valor;
+                        financeiro.PessoaNome = novoAluno.Nome;
 
                         erros = await CadastrarFinanceiro(financeiro);
                     }
                 }
                 else if (financeiro != null && !financeiro.todosAlunos)
-                {                    
-                    if (financeiro.qtdProvisionar > 0)
+                {
+                   
+                    if(financeiro.AlunoId > 0)
                     {
+                        Aluno aluno = _repo.BuscarAlunoPorId(financeiro.AlunoId);
+                        financeiro.PessoaNome = aluno.Nome;
+                    }
+                   
+                    if (financeiro.qtdProvisionar > 0)
+                    {                        
                         for(int i = 0; i <= financeiro.qtdProvisionar; i++)
                         {
                             erros = await CadastrarFinanceiro(financeiro);

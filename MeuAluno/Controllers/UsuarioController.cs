@@ -29,21 +29,6 @@ namespace MeuAluno.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<UsuarioController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Usuario model)
-        {
-            try
-            {
-                var usuario = _repo.Login(model);
-                return Ok(usuario);
-            }
-            catch (Exception ex)
-            {
-                return Ok(ex);
-            }
-        }
-
 
         [Route("/api/usuariosPorEmpresa/{empresaid:int}")]
         public async Task<IActionResult> GetByEmpresaId(int empresaId)
@@ -108,15 +93,14 @@ namespace MeuAluno.Controllers
         }
 
         [Route("/api/usuario/login")]
-        public IActionResult Login(Usuario model)
+        public async Task<IActionResult> Login(Usuario model)
         {
             try
             {
-                var usuario = _repo.Login(model);
-                if (usuario != null)
+                var token = await _repo.Login(model.Login, model.Senha);
+                if (token != null)
                 {
-                    usuario.Senha = "";
-                    return Ok(usuario);
+                   return Ok(token);
                 }
                 else return Ok("usuario não encontrado");
             }

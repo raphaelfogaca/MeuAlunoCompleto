@@ -17,7 +17,7 @@ namespace MeuAlunoRepo
         List<Aluno> BuscarAlunoPorNome(string nome);
         Aluno BuscarAlunoPorId(int? id);
         Task<Aluno[]> BuscarTodosAlunos();
-        Usuario Login(Usuario usuario);
+        Task<UsuarioTokenModelo> Login(string login, string senha);
         List<Servico> BuscarServicoPorEmpresaId(int id);
         Task<Servico[]> BuscarTodosServicos();
         Servico BuscarServicoPorId(int id);
@@ -25,8 +25,9 @@ namespace MeuAlunoRepo
         List<ServicoAula> BuscarServicoAula(int id);
         List<Materia> BuscarMateriaPorEmpresa(int id);
         Task<FinanceiroModelo[]> BuscarFinanceiroPorEmpresaId(int empresaId);
+        Task<FinanceiroModelo[]> BuscarFinanceiroPorFiltro(FinanceiroFiltros filtros);
         FinanceiroModelo BuscarFinanceiroPorId(int id);
-        List<Aluno> BuscarAlunosPorEmpresaid(int empresaId);
+        Task<Aluno[]> BuscarAlunosPorEmpresaid(int empresaId);
         Materia BuscarMateriaPorId(int id);
         List<MateriaAluno> BuscarMateriaPorAluno(int id);
         Aula BuscarAulaPorId(int id);
