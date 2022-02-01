@@ -2,10 +2,11 @@
 using MeuAlunoDominio;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MeuAlunoRepo
 {
-    public class MeuAlunoContext : DbContext 
+    public class MeuAlunoContext : IdentityDbContext 
     {
        public MeuAlunoContext(DbContextOptions<MeuAlunoContext> options) : base(options) { }
        public DbSet<Aluno> Alunos { get; set; }

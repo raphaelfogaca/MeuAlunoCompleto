@@ -213,7 +213,7 @@ namespace MeuAlunoRepo
                 IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
                .Select(s => new UsuarioTokenModelo()
                {
-                   Id = s.Id,
+                   Id = s.Id.ToString(),                   
                    Login = s.Login,
                    PessoaId = s.PessoaId,
                    PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
@@ -221,7 +221,7 @@ namespace MeuAlunoRepo
                    EmpresaId = s.EmpresaId,
                    EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
                    TipoUsuario = s.TipoUsuario,
-                   ExpirationDate = DateTime.Now.AddHours(1),
+                   ExpirationTime = 1,
                });
                 return query.FirstOrDefaultAsync();
             }
@@ -230,7 +230,7 @@ namespace MeuAlunoRepo
                 IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
                 .Select(s => new UsuarioTokenModelo()
                 {
-                    Id = s.Id,
+                    Id = s.Id.ToString(),
                     Login = s.Login,
                     PessoaId = s.PessoaId,
                     PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
@@ -238,7 +238,7 @@ namespace MeuAlunoRepo
                     EmpresaId = s.EmpresaId,
                     EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
                     TipoUsuario = s.TipoUsuario,
-                    ExpirationDate = DateTime.Now.AddHours(1),
+                    ExpirationTime = 1,
                     Empresa = _context.Empresas.ToList(),
                 });
                 return query.FirstOrDefaultAsync();
