@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeuAluno.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors]
@@ -26,7 +28,7 @@ namespace MeuAluno.Controllers
         // GET: api/<AlunoController>
 
         [Route("/api/alunoPorEmpresa/{id:int}")]
-
+        [HttpGet]
         public async Task<IActionResult> GetByEmpresaId(int id)
         {
             try

@@ -11,6 +11,8 @@ namespace MeuAluno
 {
     public class Program
     {
+        private readonly ILogger _logger;
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -18,6 +20,14 @@ namespace MeuAluno
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder
+                    .AddDebug()
+                    .AddEventLog()
+                    .AddConsole();
+            })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

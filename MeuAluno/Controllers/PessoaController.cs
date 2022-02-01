@@ -1,4 +1,5 @@
 ﻿using MeuAlunoRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -6,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MeuAluno.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class PessoaController : Controller
     {
         private readonly IMeuAlunoRepository _repo;

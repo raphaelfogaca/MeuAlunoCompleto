@@ -5,22 +5,35 @@ using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace MeuAluno.Controllers
-{
+namespace MeuAluno.Controllers{
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsuarioController : ControllerBase
     {
         public MeuAlunoContext _context { get; }
+        private readonly UsuarioTokenModelo _usuarioTokenModelo;
+
 
         private readonly IMeuAlunoRepository _repo;
-
-        public UsuarioController(IMeuAlunoRepository repo)
+        private readonly IConfiguration _configuration;
+        public UsuarioController(IMeuAlunoRepository repo, 
+                                 IConfiguration configuration,
+                                 IOptions<UsuarioTokenModelo> usuarioTokenModelo)
         {
             _repo = repo;
+            _configuration = configuration;
+            _usuarioTokenModelo = usuarioTokenModelo.Value;
         }
         // GET: api/<UsuarioController>
         [HttpGet]
@@ -43,7 +56,7 @@ namespace MeuAluno.Controllers
                 return Ok("Erro ao buscar financeiro.");
             }
         }
-
+        [Authorize]
         [Route("/api/usuarioPorId/{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -98,9 +111,16 @@ namespace MeuAluno.Controllers
             try
             {
                 var token = await _repo.Login(model.Login, model.Senha);
+
+                //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]));
+                //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+               
+                var expiration = DateTime.UtcNow.AddHours(1);                
+
                 if (token != null)
                 {
-                   return Ok(token);
+                    var jsonResult = new { jwt = await GerarJwt(Convert.ToInt16(token.Id)), DadosUsuario = token };
+                    return Ok(jsonResult);
                 }
                 else return Ok("usuario não encontrado");
             }
@@ -120,6 +140,27 @@ namespace MeuAluno.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+    
+        private async Task<string> GerarJwt(int usuarioId)
+        {
+            var user = await _repo.BuscarUsuarioPorId(usuarioId);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_usuarioTokenModelo.Secret);
+            var dadosAdicionais = new Dictionary<string, string>();
+            dadosAdicionais.Add("PessoaNome","teste");
+
+            var tokenDescriptor = new SecurityTokenDescriptor            {                
+                
+                Issuer = _usuarioTokenModelo.Emissor,
+                Expires = DateTime.UtcNow.AddHours(_usuarioTokenModelo.ExpirationTime),
+                //Expires = DateTime.UtcNow.AddMinutes(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Audience = _usuarioTokenModelo.ValidoEm
+            };
+
+            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
         }
     }
 }

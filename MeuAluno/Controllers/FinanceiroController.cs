@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MeuAluno.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FinanceiroController : ControllerBase
