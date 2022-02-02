@@ -61,6 +61,30 @@ namespace MeuAluno.Controllers
             }
         }
 
+        [Route("/api/financeiro/liquidar")]
+        public async Task<IActionResult> Liquidar(int[] documentos)
+        {
+            try
+            {
+                List<string> erros = new List<string>();
+                foreach (var item in documentos)
+                {
+                    var doc = _repo.BuscarFinanceiroPorId(item);
+                    doc.Situacao = 2;
+                    _repo.Update(doc);
+                    var resultado = await _repo.SaveChangesAsync();
+                    if (!resultado)
+                        erros.Add(item.ToString());
+                }
+               return Ok(erros);
+                
+            }
+            catch (Exception ex)
+            {
+                return Ok("Erro ao liquidar documentos.");
+            }            
+        }
+
         // GET api/<FinanceiroController>/5
         [Route("/api/cadastroFinanceiro/{id:int}")]
         public  IActionResult GetFinanceiroPorId(int id)
