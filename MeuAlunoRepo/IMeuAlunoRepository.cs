@@ -34,6 +34,7 @@ namespace MeuAlunoRepo
         Task<Pessoa[]> BuscarPessoaPorEmpresaId(int empresaId);
         Task<UsuarioModelo[]> BuscarUsuarioPorEmpresaId(int empresaId);
         Task<UsuarioModelo> BuscarUsuarioPorId(int id);
+
     }
 }
 
