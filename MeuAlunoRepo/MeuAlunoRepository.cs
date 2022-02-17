@@ -208,24 +208,8 @@ namespace MeuAlunoRepo
         public Task<UsuarioTokenModelo> Login(string login, string senha)
         {
             var usuario = _context.Usuarios.FirstOrDefault(x => x.Login == login && x.Senha == senha && x.Ativo == true);
-            if (usuario != null && usuario.TipoUsuario == 2)
-            {
-                IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
-               .Select(s => new UsuarioTokenModelo()
-               {
-                   Id = s.Id.ToString(),                   
-                   Login = s.Login,
-                   PessoaId = s.PessoaId,
-                   PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
-                   Email = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Email).FirstOrDefault(),
-                   EmpresaId = s.EmpresaId,
-                   EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
-                   TipoUsuario = s.TipoUsuario,
-                   ExpirationTime = 1,
-               });
-                return query.FirstOrDefaultAsync();
-            }
-            else if (usuario != null & usuario.TipoUsuario == 1)
+
+           if (usuario != null && usuario.TipoUsuario == 1) 
             {
                 IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
                 .Select(s => new UsuarioTokenModelo()
@@ -240,6 +224,25 @@ namespace MeuAlunoRepo
                     TipoUsuario = s.TipoUsuario,
                     ExpirationTime = 1,
                     Empresa = _context.Empresas.ToList(),
+                });
+                return query.FirstOrDefaultAsync();
+            }
+
+            if (usuario != null && usuario.TipoUsuario == 2)
+            {
+                IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
+                .Select(s => new UsuarioTokenModelo()
+                {
+                    Id = s.Id.ToString(),
+                    Login = s.Login,
+                    PessoaId = s.PessoaId,
+                    PessoaNome = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Nome).FirstOrDefault(),
+                    Email = _context.Pessoas.Where(x => x.Id == s.PessoaId).Select(n => n.Email).FirstOrDefault(),
+                    EmpresaId = s.EmpresaId,
+                    EmpresaNome = _context.Empresas.Where(x => x.Id == s.EmpresaId).Select(n => n.RazaoSocial).FirstOrDefault(),
+                    TipoUsuario = s.TipoUsuario,
+                    ExpirationTime = 1,
+                    Empresa = _context.Empresas.Where(x => x.Id == s.EmpresaId).ToList(),
                 });
                 return query.FirstOrDefaultAsync();
             }
