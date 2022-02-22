@@ -3,6 +3,7 @@ using MeuAlunoDominio;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MeuAlunoDominio.Contrato;
 
 namespace MeuAlunoRepo
 {
@@ -20,6 +21,8 @@ namespace MeuAlunoRepo
        public DbSet<MateriaAluno> MateriaAluno { get; set; }
        public DbSet<ServicoAula> ServicoAula { get; set; }
        public DbSet<Financeiro> Financeiros { get; set; }
+       public DbSet<Clausula> Clausulas { get; set; }
+        public DbSet<Contrato> Contratos { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

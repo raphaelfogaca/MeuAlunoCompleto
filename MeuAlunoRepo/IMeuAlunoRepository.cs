@@ -1,4 +1,5 @@
 ﻿using MeuAlunoDominio;
+using MeuAlunoDominio.Contrato;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,6 +35,7 @@ namespace MeuAlunoRepo
         Task<Pessoa[]> BuscarPessoaPorEmpresaId(int empresaId);
         Task<UsuarioModelo[]> BuscarUsuarioPorEmpresaId(int empresaId);
         Task<UsuarioModelo> BuscarUsuarioPorId(int id);
+        Task<ContratoModelo> BuscarContratoPorEmpresaId(int id);        
 
     }
 }

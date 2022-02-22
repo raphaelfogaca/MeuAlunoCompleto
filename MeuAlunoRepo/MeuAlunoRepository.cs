@@ -1,4 +1,5 @@
 ﻿using MeuAlunoDominio;
+using MeuAlunoDominio.Contrato;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -285,6 +286,24 @@ namespace MeuAlunoRepo
                 query = query.Where(x => x.Situacao == filtros.Situacao);
             }
             return query.ToArrayAsync();
+        }
+        public Task<ContratoModelo> BuscarContratoPorEmpresaId(int id)
+        {
+            IQueryable<Contrato> contrato = _context.Contratos.Where(x => x.EmpresaId == id);
+
+            if (!contrato.Any())
+            {
+                contrato = _context.Contratos.Where(x => x.EmpresaId == null);
+            }
+            IQueryable<Clausula> clausulas = _context.Clausulas.Where(x => x.ContratoId == contrato.FirstOrDefault().Id);
+
+            ContratoModelo contratoModelo = new ContratoModelo() 
+            {
+                Contrato = contrato.FirstOrDefault(),
+                Clausulas = clausulas
+            };
+            return Task.Delay(1000)
+                .ContinueWith(t => contratoModelo);
         }
     }
 }
