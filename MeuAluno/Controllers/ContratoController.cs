@@ -36,34 +36,19 @@ namespace MeuAluno.Controllers
             return "value";
         }
 
+
         // POST api/<ContratoController>
         [HttpPost]
         public async Task<IActionResult> Post(ContratoModelo contrato)
         {
-            var contratoDaEmpresa = await _repo.BuscarContratoPorEmpresaId(contrato.Contrato.EmpresaId.GetValueOrDefault());
-            var contratoExistente = (contratoDaEmpresa.Contrato.EmpresaId == contrato.Contrato.EmpresaId);
-
-            if (contrato.Contrato.Id == 0)
-            {
-                _repo.Add(contrato.Contrato);
-                await _repo.SaveChangesAsync();                
-            }
+            ContratoModelo contratoDaEmpresa = null;
 
             foreach (var clausula in contrato.Clausulas)
             {
-                if (contratoExistente)
-                {
-                    _repo.Update(clausula);
-                }
-                else
-                {
-                    clausula.ContratoId = contrato.Contrato.Id;
-                    clausula.Id = 0;
-                    _repo.Add(clausula);
-                }
+                _repo.Update(clausula);
+                _repo.SaveChangesAsync().Wait();
             }
 
-            await _repo.SaveChangesAsync();
             return Ok("text");
         }
 
@@ -77,6 +62,20 @@ namespace MeuAluno.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        public async void CadastrarContratoPadrao(int empresaId)
+        {
+            var contratoModelo = _repo.BuscarContratoModelo();
+            _repo.Add(contratoModelo.Contrato);
+            await _repo.SaveChangesAsync();
+            var contratoEmpresa = _repo.BuscarContratoPorEmpresaId(empresaId);
+            foreach (var item in contratoModelo.Clausulas)
+            {
+                item.ContratoId = contratoEmpresa.Id;
+                _repo.Add(item);
+                await _repo.SaveChangesAsync();
+            }
         }
     }
 }

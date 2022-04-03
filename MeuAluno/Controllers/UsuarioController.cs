@@ -109,11 +109,8 @@ namespace MeuAluno.Controllers{
         public async Task<IActionResult> Login(Usuario model)
         {
             try
-            {
-                var token = await _repo.Login(model.Login, model.Senha);
-
-                //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]));
-                //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            {                
+                var token = await _repo.Login(model.Login, model.Senha);               
                
                 var expiration = DateTime.UtcNow.AddHours(1);                
 
@@ -122,12 +119,12 @@ namespace MeuAluno.Controllers{
                     var jsonResult = new { jwt = await GerarJwt(Convert.ToInt16(token.Id)), DadosUsuario = token };
                     return Ok(jsonResult);
                 }
-                else return Ok("usuario não encontrado");
+                else return Ok("Usuario não encontrado");
             }
-            catch (Exception ex)
+            catch (Exception e) when (e.Message != "")
             {
-                return Ok(ex);
-            }
+                return Ok("Erro ao realizar login, contate o suporte.");
+            }                     
         }
 
         // PUT api/<UsuarioController>/5

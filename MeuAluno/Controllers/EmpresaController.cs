@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MeuAluno.Controllers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -89,7 +90,11 @@ namespace MeuAluno.Controllers
                 {
                     _repo.Add(empresa);
                     if (await _repo.SaveChangesAsync())
-                    { return Ok("Empresa cadastrada com sucesso"); }
+                    {
+                        ContratoController contrato = new ContratoController(_repo);
+                        contrato.CadastrarContratoPadrao(empresa.Id);
+                        return Ok("Empresa cadastrada com sucesso"); 
+                    }
                     else
                     {
                         return Ok("Erro ao cadastrar");
