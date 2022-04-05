@@ -11,7 +11,8 @@ namespace MeuAlunoDominio.Contrato
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public int? ContratoId { get; set; }        
-        
+        public int? ContratoId { get; set; }
+        public bool? Ativa { get; set; }
+
     }
 }

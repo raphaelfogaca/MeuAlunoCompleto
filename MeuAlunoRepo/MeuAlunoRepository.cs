@@ -206,11 +206,15 @@ namespace MeuAlunoRepo
                 });
             return query.FirstOrDefaultAsync();
         }
-        public Task<UsuarioTokenModelo> Login(string login, string senha)
+        public async Task<UsuarioTokenModelo> Login(string login, string senha)
         {
             var usuario = _context.Usuarios.FirstOrDefault(x => x.Login == login && x.Senha == senha && x.Ativo == true);
 
-           if (usuario != null && usuario.TipoUsuario == 1) 
+            if (usuario == null)
+            {
+                return null;
+            }
+            if (usuario != null && usuario.TipoUsuario == 1)
             {
                 IQueryable<UsuarioTokenModelo> query = _context.Usuarios.Where(x => x.Login == login && x.Senha == senha && x.Ativo == true)
                 .Select(s => new UsuarioTokenModelo()
@@ -226,7 +230,7 @@ namespace MeuAlunoRepo
                     ExpirationTime = 1,
                     Empresa = _context.Empresas.ToList(),
                 });
-                return query.FirstOrDefaultAsync();
+                return await query.FirstOrDefaultAsync();
             }
 
             if (usuario != null && usuario.TipoUsuario == 2)
@@ -245,7 +249,7 @@ namespace MeuAlunoRepo
                     ExpirationTime = 1,
                     Empresa = _context.Empresas.Where(x => x.Id == s.EmpresaId).ToList(),
                 });
-                return query.FirstOrDefaultAsync();
+                return await query.FirstOrDefaultAsync();
             }
             return null;
         }
@@ -265,7 +269,7 @@ namespace MeuAlunoRepo
                     PessoaNome = s.PessoaNome,
                     NomeAluno = _context.Alunos.Where(x => x.Id == s.AlunoId).Select(n => n.Nome).FirstOrDefault(),
                 });
-            if(filtros.VencimentoInicio != null)
+            if (filtros.VencimentoInicio != null)
             {
                 query = query.Where(x => x.DataVencimento >= filtros.VencimentoInicio);
             }
@@ -287,24 +291,24 @@ namespace MeuAlunoRepo
             }
             return query.ToArrayAsync();
         }
-        public Task<ContratoModelo> BuscarContratoPorEmpresaId(int id)
+        public ContratoModelo BuscarContratoPorEmpresaId(int id)
         {
             IQueryable<Contrato> contrato = _context.Contratos.Where(x => x.EmpresaId == id);
-
             if (!contrato.Any())
             {
-                contrato = _context.Contratos.Where(x => x.EmpresaId == null);
+                return null;
             }
             IQueryable<Clausula> clausulas = _context.Clausulas.Where(x => x.ContratoId == contrato.FirstOrDefault().Id);
 
-            ContratoModelo contratoModelo = new ContratoModelo() 
+            ContratoModelo contratoModelo = new ContratoModelo()
             {
                 Contrato = contrato.FirstOrDefault(),
                 Clausulas = clausulas
             };
-            return Task.Delay(1000)
-                .ContinueWith(t => contratoModelo);
+            return contratoModelo;
         }
+
+        
     }
 }
 
