@@ -1,4 +1,5 @@
 ﻿using MeuAlunoDominio.Contrato;
+using MeuAlunoDominio.Interfaces;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,14 +11,11 @@ namespace MeuAluno.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ContratoController : ControllerBase
-    {
-
-        public MeuAlunoContext _context { get; }
-
-        private readonly IMeuAlunoRepository _repo;
-        public ContratoController(IMeuAlunoRepository repo)
+    {        
+        private readonly IContratoService _contratoService;
+        public ContratoController(IContratoService contratoService)
         {
-            _repo = repo;
+            _contratoService = contratoService;
         }
         // GET: api/<ContratoController>
         [HttpGet]
@@ -25,7 +23,7 @@ namespace MeuAluno.Controllers
 
         public async Task<IActionResult> GetByEmpresAId(int empresaId)
         {
-            var contrato = await _repo.BuscarContratoPorEmpresaId(empresaId);
+            var contrato = _contratoService.BuscarContratoPorEmpresaId(empresaId);
             return Ok(contrato);
         }
 
@@ -41,14 +39,7 @@ namespace MeuAluno.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ContratoModelo contrato)
         {
-            ContratoModelo contratoDaEmpresa = null;
-
-            foreach (var clausula in contrato.Clausulas)
-            {
-                _repo.Update(clausula);
-                _repo.SaveChangesAsync().Wait();
-            }
-
+            
             return Ok("text");
         }
 
@@ -63,19 +54,6 @@ namespace MeuAluno.Controllers
         public void Delete(int id)
         {
         }
-
-        public async void CadastrarContratoPadrao(int empresaId)
-        {
-            var contratoModelo = _repo.BuscarContratoModelo();
-            _repo.Add(contratoModelo.Contrato);
-            await _repo.SaveChangesAsync();
-            var contratoEmpresa = _repo.BuscarContratoPorEmpresaId(empresaId);
-            foreach (var item in contratoModelo.Clausulas)
-            {
-                item.ContratoId = contratoEmpresa.Id;
-                _repo.Add(item);
-                await _repo.SaveChangesAsync();
-            }
-        }
+       
     }
 }

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MeuAluno.Controllers;
+using MeuAlunoRepo.Services;
+using MeuAlunoDominio.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,9 +25,12 @@ namespace MeuAluno.Controllers
         public MeuAlunoContext _context { get; }
 
         private readonly IMeuAlunoRepository _repo;
-        public EmpresaController(IMeuAlunoRepository repo)
+
+        private readonly IContratoService _contratoService;
+        public EmpresaController(IMeuAlunoRepository repo, IContratoService contratoService)
         {
-            _repo = repo;           
+            _repo = repo;
+            _contratoService = contratoService;
         }
 
         // GET: api/<EmpresaController>
@@ -91,8 +96,7 @@ namespace MeuAluno.Controllers
                     _repo.Add(empresa);
                     if (await _repo.SaveChangesAsync())
                     {
-                        ContratoController contrato = new ContratoController(_repo);
-                        contrato.CadastrarContratoPadrao(empresa.Id);
+                        await _contratoService.CadastrarContratoModelo(empresa.Id);
                         return Ok("Empresa cadastrada com sucesso"); 
                     }
                     else
