@@ -23,7 +23,7 @@ namespace MeuAluno.Controllers
 
         public async Task<IActionResult> GetByEmpresAId(int empresaId)
         {
-            var contrato = _contratoService.BuscarContratoPorEmpresaId(empresaId);
+            var contrato = await _contratoService.BuscarContratoPorEmpresaId(empresaId);
             return Ok(contrato);
         }
 

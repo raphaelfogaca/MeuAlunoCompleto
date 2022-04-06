@@ -44,7 +44,7 @@ namespace MeuAluno.Controllers
 
 
         [Route("/api/financeiro/buscar")]
-        public async Task<IActionResult> Buscar(FinanceiroFiltros filtros)
+        public async Task<IActionResult> Buscar(FinanceiroFiltroModelo filtros)
         {
             try
             {

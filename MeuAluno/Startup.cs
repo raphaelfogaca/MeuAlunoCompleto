@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MeuAlunoDominio.Interfaces;
 using MeuAlunoRepo.Services;
+using MeuAlunoRepo.Repositories;
 
 namespace MeuAluno
 {
@@ -76,7 +77,13 @@ namespace MeuAluno
             });
 
             services.AddScoped<IMeuAlunoRepository, MeuAlunoRepository>();
+            services.AddScoped<IClausulaService, ClausulaService>();
+            services.AddScoped<IEmpresaService, EmpresaService>();
             services.AddScoped<IContratoService, ContratoService>();
+            services.AddScoped<ContratoRepository, ContratoRepository>();
+            services.AddScoped<ClausulaRepository, ClausulaRepository>();
+
+
 
             services.AddCors();
 

@@ -37,30 +37,30 @@ namespace MeuAluno.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {         
-            try
-            {
-                var empresas = await _repo.BuscarTodasEmpresas();
-                return Ok(empresas);
-            }
-            catch (Exception ex)
-            {
-                return Ok("Erro:" + ex);
-            }
+            //try
+            //{
+            //    var empresas = await _repo.BuscarTodasEmpresas();
+            //    return Ok(empresas);
+            //}
+            //catch (Exception ex)
+            //{
+                return Ok("Erro:");
+            //}
         }
 
         // GET api/<EmpresaController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var empresa = _repo.BuscarEmpresaPorId(id);
-                return Ok(empresa);
-            }
-            catch (Exception)
-            {
+            //try
+            //{
+            //    var empresa = _repo.BuscarEmpresaPorId(id);
+            //    return Ok(empresa);
+            //}
+            //catch (Exception)
+            //{
                 return Ok("Não encontrada");
-            }
+            //}
         }
 
         // POST api/<EmpresaController>
