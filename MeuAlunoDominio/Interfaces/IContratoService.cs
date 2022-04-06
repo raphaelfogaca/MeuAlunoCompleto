@@ -10,7 +10,7 @@ namespace MeuAlunoDominio.Interfaces
     public interface IContratoService
     {
         Task<ContratoModelo> CadastrarContratoModelo(int empresaId);
-        ContratoModelo BuscarContratoPorEmpresaId(int id);
-        ContratoModelo BuscarContratoModelo();
+        Task<ContratoModelo> BuscarContratoPorEmpresaId(int empresaId);
+        Task<ContratoModelo> BuscarContratoModelo();
     }
 }

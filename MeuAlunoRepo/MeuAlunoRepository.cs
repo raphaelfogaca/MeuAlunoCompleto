@@ -99,18 +99,7 @@ namespace MeuAlunoRepo
         {
             return _context.Materias.FirstOrDefault(s => s.Id == id);
         }
-        public Empresa BuscarEmpresaPorId(int id)
-        {
-            Empresa query = _context.Empresas.FirstOrDefault(e => e.Id == id);
-            query.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == query.EnderecoId);
-            query.Pessoas = BuscarPessoasPorEmpresaId(id);
-            return query;
-        }
-        public Task<Empresa[]> BuscarTodasEmpresas()
-        {
-            IQueryable<Empresa> query = _context.Empresas;
-            return query.ToArrayAsync();
-        }
+       
         public Aluno BuscarAlunoPorId(int? id)
         {
             Aluno query = _context.Alunos.FirstOrDefault(a => a.Id == id);
@@ -253,7 +242,7 @@ namespace MeuAlunoRepo
             }
             return null;
         }
-        public Task<FinanceiroModelo[]> BuscarFinanceiroPorFiltro(FinanceiroFiltros filtros)
+        public Task<FinanceiroModelo[]> BuscarFinanceiroPorFiltro(FinanceiroFiltroModelo filtros)
         {
             IQueryable<FinanceiroModelo> query = (IQueryable<FinanceiroModelo>)_context.Financeiros.Where(x => x.EmpresaId == filtros.EmpresaId)
                 .Select(s => new FinanceiroModelo()
@@ -291,24 +280,7 @@ namespace MeuAlunoRepo
             }
             return query.ToArrayAsync();
         }
-        public ContratoModelo BuscarContratoPorEmpresaId(int id)
-        {
-            IQueryable<Contrato> contrato = _context.Contratos.Where(x => x.EmpresaId == id);
-            if (!contrato.Any())
-            {
-                return null;
-            }
-            IQueryable<Clausula> clausulas = _context.Clausulas.Where(x => x.ContratoId == contrato.FirstOrDefault().Id);
-
-            ContratoModelo contratoModelo = new ContratoModelo()
-            {
-                Contrato = contrato.FirstOrDefault(),
-                Clausulas = clausulas
-            };
-            return contratoModelo;
-        }
-
-        
+               
     }
 }
 

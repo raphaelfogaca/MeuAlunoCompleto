@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MeuAlunoDominio
 {
-    public class FinanceiroFiltros
+    public class FinanceiroFiltroModelo
     {
         [Column(TypeName = "date")]
         public DateTime? VencimentoInicio { get; set; }
