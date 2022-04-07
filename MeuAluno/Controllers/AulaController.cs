@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using MeuAlunoDominio;
-using MeuAlunoRepo;
+using MeuAlunoDominio.Entities;
+using MeuAlunoDominio.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

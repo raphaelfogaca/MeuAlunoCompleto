@@ -1,6 +1,5 @@
-﻿using MeuAlunoDominio.Contrato;
-using MeuAlunoDominio.Interfaces;
-using MeuAlunoRepo;
+﻿using MeuAlunoDominio.DTO;
+using MeuAlunoDominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

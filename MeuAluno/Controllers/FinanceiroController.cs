@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MeuAlunoDominio;
+using MeuAlunoDominio.Entities;
+using MeuAlunoDominio.Interfaces.Repositories;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

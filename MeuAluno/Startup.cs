@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using MeuAlunoDominio.Interfaces;
 using MeuAlunoRepo.Services;
 using MeuAlunoRepo.Repositories;
+using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 
 namespace MeuAluno
 {
@@ -76,14 +78,15 @@ namespace MeuAluno
                 };
             });
 
-            services.AddScoped<IMeuAlunoRepository, MeuAlunoRepository>();
+            //repositories
+            services.AddScoped<IMeuAlunoRepository, MeuAlunoRepository>(); //remover??
+            services.AddScoped<IContratoRepository, ContratoRepository>();
+            services.AddScoped<IClausulaRepository, ClausulaRepository>();
+
+            //services
             services.AddScoped<IClausulaService, ClausulaService>();
             services.AddScoped<IEmpresaService, EmpresaService>();
             services.AddScoped<IContratoService, ContratoService>();
-            services.AddScoped<ContratoRepository, ContratoRepository>();
-            services.AddScoped<ClausulaRepository, ClausulaRepository>();
-
-
 
             services.AddCors();
 
