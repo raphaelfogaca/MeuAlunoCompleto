@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using MeuAlunoDominio.Interfaces;
+using MeuAlunoDominio.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeuAlunoRepo.Repositories
@@ -36,6 +33,10 @@ namespace MeuAlunoRepo.Repositories
         {
             Db.Dispose();
             GC.SuppressFinalize(this);
+        }
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await Db.SaveChangesAsync()) > 0;
         }
     }
 }

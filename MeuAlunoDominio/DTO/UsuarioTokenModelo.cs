@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using MeuAlunoDominio.Entities;
+using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MeuAlunoDominio
 {

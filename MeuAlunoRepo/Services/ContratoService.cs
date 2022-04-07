@@ -1,19 +1,18 @@
-﻿using MeuAlunoDominio.Contrato;
-using MeuAlunoDominio.Interfaces;
+﻿using MeuAlunoDominio.DTO;
+using MeuAlunoDominio.Interfaces.Services;
 using MeuAlunoRepo.Repositories;
-using System;
+using MeuAlunoDominio.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using MeuAlunoDominio.Interfaces.Repositories;
 
 namespace MeuAlunoRepo.Services
 {
     public class ContratoService : IContratoService
     {
-        private readonly ContratoRepository _repo;
+        private readonly IContratoRepository _repo;
         private readonly IClausulaService _clausulaService;
-        public ContratoService(ContratoRepository repo, IClausulaService clausulaService)
+        public ContratoService(IContratoRepository repo, IClausulaService clausulaService)
         {
             _repo = repo;
             _clausulaService = clausulaService;
@@ -26,7 +25,6 @@ namespace MeuAlunoRepo.Services
             contratoModelo.Clausulas = await _clausulaService.BuscarClausulasModelo(contrato.Id);
             return contratoModelo;            
         }
-
         public async Task<ContratoModelo> BuscarContratoPorEmpresaId(int empresaId)
         {
             var contrato = await _repo.BuscarContratoPorEmpresaId(empresaId);
@@ -35,10 +33,23 @@ namespace MeuAlunoRepo.Services
             contratoModelo.Clausulas = await _clausulaService.BuscarClausulasModelo(contrato.Id);
             return contratoModelo;            
         }
-
-        public Task<ContratoModelo> CadastrarContratoModelo(int empresaId)
+        public async Task<ContratoModelo> CadastrarContratoModelo(int empresaId)
         {
-            throw new NotImplementedException();
+            Contrato contrato = new Contrato();
+            contrato.EmpresaId = empresaId;
+
+            var retornoContrato = await _repo.CadastrarContratoModelo(contrato);
+            var listaClausulas = await _clausulaService.BuscarClausulasModelo(retornoContrato.Id);
+            foreach (var item in listaClausulas)
+            {
+                item.ContratoId = retornoContrato.Id;
+            }
+
+            await _clausulaService.CadastrarClausulas(listaClausulas);
+
+            return await this.BuscarContratoPorEmpresaId(retornoContrato.EmpresaId.GetValueOrDefault());
+            
         }
+               
     }
 }

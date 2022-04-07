@@ -1,11 +1,12 @@
 ﻿using MeuAlunoDominio;
-using MeuAlunoDominio.Contrato;
+using MeuAlunoDominio.DTO;
+using MeuAlunoDominio.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeuAlunoRepo
+namespace MeuAlunoDominio.Interfaces.Repositories
 {
     public interface IMeuAlunoRepository
     {

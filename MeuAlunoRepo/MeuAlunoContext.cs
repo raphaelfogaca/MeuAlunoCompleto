@@ -3,7 +3,7 @@ using MeuAlunoDominio;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using MeuAlunoDominio.Contrato;
+using MeuAlunoDominio.Entities;
 
 namespace MeuAlunoRepo
 {

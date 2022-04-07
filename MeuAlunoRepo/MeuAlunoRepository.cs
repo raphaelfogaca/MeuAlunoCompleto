@@ -1,5 +1,6 @@
 ﻿using MeuAlunoDominio;
-using MeuAlunoDominio.Contrato;
+using MeuAlunoDominio.Entities;
+using MeuAlunoDominio.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
