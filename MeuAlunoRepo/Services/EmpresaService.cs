@@ -4,31 +4,80 @@ using Microsoft.EntityFrameworkCore;
 using MeuAlunoDominio.Interfaces.Services;
 using MeuAlunoDominio.Interfaces.Repositories;
 using MeuAlunoDominio.Entities;
+using System.Collections.Generic;
+using MeuAlunoDominio;
+using System;
 
 namespace MeuAlunoRepo.Services
 {
     public class EmpresaService : IEmpresaService
     {
-        MeuAlunoContext _context;
-        IMeuAlunoRepository _repository;
+        IEmpresaRepository _repository;
+        IEnderecoService _enderecoService;
+        IContratoService _contratoService;
 
-        public EmpresaService(MeuAlunoContext context, IMeuAlunoRepository repository)
-        {
-            _context = context;
+        public EmpresaService(IEmpresaRepository repository, 
+            IEnderecoService enderecoService,
+            IContratoService contratoService)
+        {            
             _repository = repository;
+            _enderecoService = enderecoService;
+            _contratoService = contratoService;
         }
-        public Empresa BuscarEmpresaPorId(int id)
+        public async Task<Empresa> BuscarEmpresaPorId(int empresaId)
         {
-            Empresa query = _context.Empresas.FirstOrDefault(e => e.Id == id);
-            query.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == query.EnderecoId);
-            //query.Pessoas = BuscarPessoasPorEmpresaId(id);
-            return query;
-        }
-        public Task<Empresa[]> BuscarTodasEmpresas()
-        {
-            IQueryable<Empresa> query = _context.Empresas;
-            return query.ToArrayAsync();            
+            var empresa = await _repository.BuscarEmpresaPorId(empresaId);
+            empresa.Endereco = await _enderecoService.BuscarPorId(empresa.EnderecoId.GetValueOrDefault());
+            return empresa;
         }
 
+        public async Task<List<Empresa>> BuscarTodasEmpresas()
+        {
+            List<Empresa> empresas = await _repository.BuscarTodasEmpresas();
+            return empresas;
+        }
+
+        public async Task<Empresa> Inserir(EmpresaModelo model)
+        {
+            try
+            {
+                List<Pessoa> pessoas = new List<Pessoa>();
+                pessoas.Add(model.Pessoa);
+                Empresa empresa = new Empresa();
+                empresa.Id = model.Id;
+                empresa.CNPJ_CPF = model.CNPJ_CPF;
+                empresa.RazaoSocial = model.RazaoSocial;
+                empresa.Telefone = model.Telefone;
+                empresa.Endereco = model.Endereco;
+                empresa.Pessoas = pessoas;
+
+                if (empresa.Id > 0)
+                {
+                    empresa.Pessoas = null;
+                    var retorno = await _repository.Alterar(empresa);
+                    return retorno;
+                }
+                else
+                {
+                    var retorno = await _repository.Inserir(empresa);
+                    if (retorno != null)
+                    {
+                        await _contratoService.CadastrarContratoModelo(empresa.Id);
+                        return retorno;
+                    }
+                    else
+                    {
+                        return retorno;
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Empresa não cadastrada:" + ex);
+            }
+
+        }
     }
 }

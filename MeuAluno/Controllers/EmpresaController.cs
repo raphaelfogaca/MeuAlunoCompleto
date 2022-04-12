@@ -17,97 +17,59 @@ namespace MeuAluno.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class EmpresaController : ControllerBase
-    {
-       
-        public MeuAlunoContext _context { get; }
-
-        private readonly IMeuAlunoRepository _repo;
+    {             
+        private readonly IEmpresaService _empresaService;
 
         private readonly IContratoService _contratoService;
-        public EmpresaController(IMeuAlunoRepository repo, IContratoService contratoService)
+        public EmpresaController(IEmpresaService empresaService, IContratoService contratoService)
         {
-            _repo = repo;
+            _empresaService = empresaService;
             _contratoService = contratoService;
         }
 
         // GET: api/<EmpresaController>
         [HttpGet]
         public async Task<IActionResult> Get()
-        {         
-            //try
-            //{
-            //    var empresas = await _repo.BuscarTodasEmpresas();
-            //    return Ok(empresas);
-            //}
-            //catch (Exception ex)
-            //{
+        {
+            try
+            {
+                var empresas = await _empresaService.BuscarTodasEmpresas();
+                return Ok(empresas);
+            }
+            catch (Exception ex)
+            {
                 return Ok("Erro:");
-            //}
+            }
         }
 
         // GET api/<EmpresaController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            //try
-            //{
-            //    var empresa = _repo.BuscarEmpresaPorId(id);
-            //    return Ok(empresa);
-            //}
-            //catch (Exception)
-            //{
+            try
+            {
+                var empresa = _empresaService.BuscarEmpresaPorId(id);
+                return Ok(empresa);
+            }
+            catch (Exception)
+            {
                 return Ok("Não encontrada");
-            //}
+            }
         }
 
         // POST api/<EmpresaController>
         [HttpPost]
         public async Task<IActionResult> Post(EmpresaModelo model)
         {
-            try
+           var cadastroEmpresa = await _empresaService.Inserir(model);
+            if(cadastroEmpresa == null)
             {
-                List<Pessoa> pessoas = new List<Pessoa>(); 
-                pessoas.Add(model.Pessoa);
-
-                Empresa empresa = new Empresa();
-                empresa.Id = model.Id;
-                empresa.CNPJ_CPF = model.CNPJ_CPF;
-                empresa.RazaoSocial = model.RazaoSocial;
-                empresa.Telefone = model.Telefone;
-                empresa.Endereco = model.Endereco;
-                empresa.Pessoas = pessoas;               
-
-                if (empresa.Id > 0)
-                {
-                    empresa.Pessoas = null;
-                    _repo.Update(empresa);
-                    if (await _repo.SaveChangesAsync())
-                    { return Ok("Empresa atualizada"); }
-                    else
-                    {
-                        return Ok("Erro ao cadastrar");
-                    }
-                }
-                else
-                {
-                    _repo.Add(empresa);
-                    if (await _repo.SaveChangesAsync())
-                    {
-                        await _contratoService.CadastrarContratoModelo(empresa.Id);
-                        return Ok("Empresa cadastrada com sucesso"); 
-                    }
-                    else
-                    {
-                        return Ok("Erro ao cadastrar");
-                    }
-                }
-
-
+                return Ok("Erro ao cadastrar empresa");
             }
-            catch (Exception ex)
+            else
             {
+                return Ok("Empresa cadastrada com sucesso");
 
-                return Ok("Empresa não cadastrada:" + ex);
             }
         }
 
