@@ -37,6 +37,6 @@ namespace MeuAlunoRepo.Repositories
         public async Task<bool> SaveChangesAsync()
         {
             return (await Db.SaveChangesAsync()) > 0;
-        }
+        }       
     }
 }

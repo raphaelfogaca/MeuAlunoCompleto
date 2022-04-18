@@ -15,6 +15,7 @@ namespace MeuAlunoRepo.Services
         IEmpresaRepository _repository;
         IEnderecoService _enderecoService;
         IContratoService _contratoService;
+        IPessoaService _pessoaService;
 
         public EmpresaService(IEmpresaRepository repository, 
             IEnderecoService enderecoService,
@@ -28,6 +29,7 @@ namespace MeuAlunoRepo.Services
         {
             var empresa = await _repository.BuscarEmpresaPorId(empresaId);
             empresa.Endereco = await _enderecoService.BuscarPorId(empresa.EnderecoId.GetValueOrDefault());
+            empresa.Pessoas = await _pessoaService.BuscarPessoaPorEmpresaId(empresaId);
             return empresa;
         }
 

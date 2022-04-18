@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MeuAlunoDominio.Entities;
 using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,10 @@ namespace MeuAluno.Controllers
     [ApiController]
     public class MateriaController : ControllerBase
     {
-        private readonly IMeuAlunoRepository _repo;
-
-        public MateriaController(IMeuAlunoRepository repo)
+        private readonly IMateriaService _materiaService;
+        public MateriaController(IMateriaService materiaService)
         {
-            _repo = repo;
+            _materiaService = materiaService;
         }
 
         // GET api/<MateriaController>/5
@@ -27,7 +27,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var materias = _repo.BuscarMateriaPorEmpresa(id);
+                var materias = _materiaService.BuscarMateriaPorEmpresa(id);
                 return Ok(materias);
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var materias = _repo.BuscarMateriaPorId(id);
+                var materias = _materiaService.BuscarMateriaPorId(id);
                 return Ok(materias);
             }
             catch (Exception ex)
@@ -58,30 +58,17 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                if(model.Id > 0)
+
+                var retorno = await _materiaService.Cadastrar(model);
+                if (retorno != null)
                 {
-                    _repo.Update(model);
-                    if (await _repo.SaveChangesAsync())
-                    {
-                        return Ok("Matéria atualizada");
-                    }
-                    else
-                    {
-                        return Ok("Matéria não atualizada");
-                    }
-                } else
-                {
-                    _repo.Add(model);
-                    if (await _repo.SaveChangesAsync())
-                    {
-                        return Ok("Matéria cadastrada");
-                    }
-                    else
-                    {
-                        return Ok("Matéria não cadastrada");
-                    }
+                    return Ok("Matéria cadastrada");
                 }
-               
+                else
+                {
+                    return Ok("Matéria não cadastrada");
+                }
+
             }
             catch (Exception ex)
             {

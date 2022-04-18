@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MeuAlunoDominio.Interfaces;
 using MeuAlunoRepo.Services;
 using MeuAlunoRepo.Repositories;
 using MeuAlunoDominio.Interfaces.Repositories;
@@ -82,11 +75,25 @@ namespace MeuAluno
             services.AddScoped<IMeuAlunoRepository, MeuAlunoRepository>(); //remover??
             services.AddScoped<IContratoRepository, ContratoRepository>();
             services.AddScoped<IClausulaRepository, ClausulaRepository>();
+            services.AddScoped<IEnderecoRepository, EnderecoRepository>();
+            services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+            services.AddScoped<IPessoaRepository, PessoaRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IMateriaRepository, MateriaRepository>();
+            services.AddScoped<IAulaRepository, AulaRepository>();
+            services.AddScoped<IFinanceiroRepository, FinanceiroRepository>();
+
 
             //services
-            services.AddScoped<IClausulaService, ClausulaService>();
-            services.AddScoped<IEmpresaService, EmpresaService>();
             services.AddScoped<IContratoService, ContratoService>();
+            services.AddScoped<IClausulaService, ClausulaService>();
+            services.AddScoped<IEnderecoService, EnderecoService>();
+            services.AddScoped<IEmpresaService, EmpresaService>();
+            services.AddScoped<IPessoaService, PessoaService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IMateriaService, MateriaService>();
+            services.AddScoped<IAulaService, AulaService>();
+            services.AddScoped<IFinanceiroService, FinanceiroService>();
 
             services.AddCors();
 

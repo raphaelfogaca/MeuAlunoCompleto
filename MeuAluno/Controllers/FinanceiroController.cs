@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoDominio.Entities;
 using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,10 @@ namespace MeuAluno.Controllers
     public class FinanceiroController : ControllerBase
     {
 
-        private readonly IMeuAlunoRepository _repo;
-        public FinanceiroController(IMeuAlunoRepository repo)
+        private readonly IFinanceiroService _financeiroService;
+        public FinanceiroController(IFinanceiroService financeiroService)
         {
-            _repo = repo;
+            _financeiroService = financeiroService;
         }
 
         // GET: api/<FinanceiroController>
@@ -35,7 +36,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var financeiros = await _repo.BuscarFinanceiroPorEmpresaId(empresaId);
+                var financeiros = await _financeiroService.BuscarFinanceiroPorEmpresaId(empresaId);
                 return Ok(financeiros);
             }
             catch
@@ -50,7 +51,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var financeiros = await _repo.BuscarFinanceiroPorFiltro(filtros);
+                var financeiros = await _financeiroService.BuscarFinanceiroPorFiltro(filtros);
                 if (financeiros.FirstOrDefault() != null)
                 {
                     return Ok(financeiros);
@@ -71,11 +72,8 @@ namespace MeuAluno.Controllers
                 List<string> erros = new List<string>();
                 foreach (var item in documentos)
                 {
-                    var doc = _repo.BuscarFinanceiroPorId(item);
-                    doc.Situacao = 2;
-                    _repo.Update(doc);
-                    var resultado = await _repo.SaveChangesAsync();
-                    if (!resultado)
+                   var retorno = await _financeiroService.LiquidarDocumento(item);
+                    if (!retorno)
                         erros.Add(item.ToString());
                 }
                return Ok(erros);
@@ -93,7 +91,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var financeiros = _repo.BuscarFinanceiroPorId(id);
+                var financeiros = _financeiroService.BuscarFinanceiroPorId(id);
                 return Ok(financeiros);
             }
             catch (Exception ex)
@@ -105,114 +103,16 @@ namespace MeuAluno.Controllers
              
         [Route("/api/financeiro/cadastrar")]
         public async Task<IActionResult> Cadastrar(FinanceiroModelo financeiro)
-        {            
+        {
             try
             {
-                List<string> erros = null;
-                bool edicao = false;
-
-                if (!(financeiro.AlunoId > 0) && financeiro.PessoaNome == "" && financeiro.todosAlunos == false)
-                {                    
-                    return Ok("Erro ao gerar CRE.");
-                }
-
-                if (financeiro.Id > 0)
-                {
-                    edicao = true;
-                }
-                financeiro.Valor /= 100;               
-                if (financeiro != null && financeiro.todosAlunos)
-                {
-                    var listaAlunos = await _repo.BuscarAlunosPorEmpresaid(financeiro.EmpresaId);
-                    
-                    foreach (var aluno in listaAlunos)
-                    {
-                        financeiro.Id = 0;
-                        financeiro.AlunoId = aluno.Id;
-                        Aluno novoAluno = _repo.BuscarAlunoPorId(aluno.Id);
-                        Servico servicoAluno = _repo.BuscarServicoPorId(novoAluno.ServicoId);
-                        financeiro.Valor = servicoAluno.Valor;
-                        financeiro.PessoaNome = novoAluno.Nome;
-
-                        erros = await CadastrarFinanceiro(financeiro);
-                    }
-                }
-                else if (financeiro != null && !financeiro.todosAlunos)
-                {
-                   
-                    if(financeiro.AlunoId > 0)
-                    {
-                        Aluno aluno = _repo.BuscarAlunoPorId(financeiro.AlunoId);
-                        financeiro.PessoaNome = aluno.Nome;
-                    }
-                   
-                    if (financeiro.qtdProvisionar > 0)
-                    {                        
-                        for(int i = 0; i <= financeiro.qtdProvisionar; i++)
-                        {
-                            erros = await CadastrarFinanceiro(financeiro);
-                            financeiro.DataVencimento = financeiro.DataVencimento.AddMonths(1);
-                            financeiro.Id = 0;
-                        }
-                    }
-                    else
-                    {
-                        erros = await CadastrarFinanceiro(financeiro);
-                    }
-                }
-                if (erros != null)
-                {
-                   
-                    return Ok("Erro ao gerar CRE.");
-                }
-                else
-                {
-                    if (edicao)
-                    {
-                        return Ok("Financeiro atualizado com sucesso.");
-                    }
-                    else
-                    {
-                        return Ok("Financeiro gerado com sucesso.");
-                    }                    
-                }
+                var financeiros = _financeiroService.Cadastrar(financeiro);
+                return Ok("Financeiro cadastrado");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Ok(ex.Message);
-            }
 
-            async Task<List<string>> CadastrarFinanceiro(Financeiro financeiro)
-            {
-                List<string> listaErros = null;
-                try
-                {
-                    if (financeiro.Id > 0)
-                    {
-                        _repo.Update(financeiro);
-                        var retorno = await _repo.SaveChangesAsync();
-                        if (!retorno)
-                        {
-                            listaErros.Add(retorno.ToString());
-                        }
-
-                    }
-                    else
-                    {
-                        _repo.Add(financeiro);
-                        var retorno = await _repo.SaveChangesAsync();
-                        if (!retorno)
-                        {
-                            listaErros.Add(retorno.ToString());
-                        }
-                    }
-                    
-                }
-                catch (Exception ex)
-                {
-                    throw (ex);
-                }
-                return listaErros;
+                throw;
             }
         }
 

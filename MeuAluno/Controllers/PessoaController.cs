@@ -1,4 +1,5 @@
 ﻿using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,11 @@ namespace MeuAluno.Controllers
     [ApiController]
     public class PessoaController : Controller
     {
-        private readonly IMeuAlunoRepository _repo;
-        public PessoaController(IMeuAlunoRepository repo)
+        private readonly IPessoaService _pessoaService;
+        
+        public PessoaController(IPessoaService pessoaService)
         {
-            _repo = repo;
+            pessoaService = _pessoaService;
         }
         // GET: Pessoa        
         [HttpGet]
@@ -24,7 +26,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var pessoas = await _repo.BuscarPessoaPorEmpresaId(empresaId);
+                var pessoas = await _pessoaService.BuscarPessoaPorEmpresaId(empresaId);
                 return Ok(pessoas);
             }
             catch (Exception ex)

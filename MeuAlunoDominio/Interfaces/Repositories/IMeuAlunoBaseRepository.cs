@@ -9,5 +9,6 @@ namespace MeuAlunoDominio.Interfaces.Repositories
         void Update(TEntity obj);
         void Remove(TEntity obj);
         Task<bool> SaveChangesAsync();
+               
     }
 }
