@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoDominio.Entities;
 using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -20,12 +21,12 @@ namespace MeuAluno.Controllers
     [EnableCors]
     public class AlunoController : ControllerBase
     {
-        private readonly IMeuAlunoRepository _repo;
-
-        public MeuAlunoContext _context { get; }
-        public AlunoController(IMeuAlunoRepository repo)
+        private readonly IAlunoService _alunoService;
+        private readonly IMateriaService _materiaService;
+        public AlunoController(IAlunoService alunoService, IMateriaService materiaService)
         {
-            _repo = repo;
+            _alunoService = alunoService;
+            _materiaService = materiaService;
         }
         // GET: api/<AlunoController>
 
@@ -35,7 +36,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var alunos = await _repo.BuscarAlunosPorEmpresaid(id);
+                var alunos = await _alunoService.BuscarAlunosPorEmpresaid(id);
                 return Ok(alunos);
             }
             catch (Exception ex)
@@ -48,34 +49,34 @@ namespace MeuAluno.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Get()
-        {     
-                try
-                {
-                    var alunos = await _repo.BuscarTodosAlunos();
-                    return Ok(alunos);
-                }
-                catch (Exception ex)
-                {
+        {
+            try
+            {
+                var alunos = await _alunoService.BuscarTodosAlunos();
+                return Ok(alunos);
+            }
+            catch (Exception ex)
+            {
 
-                    return Ok("Erro:" + ex);
-                }
-           
+                return Ok("Erro:" + ex);
+            }
+
         }
-      
+
         [Route("/api/aluno/{id:int}")]
         public IActionResult GetById(int id)
         {
-            
-                try
-                {
-                    var aluno = _repo.BuscarAlunoPorId(id);
-                    return Ok(aluno);
-                }
-                catch (Exception ex)
-                {
 
-                    return Ok("Erro:" + ex);
-                }            
+            try
+            {
+                var aluno = _alunoService.BuscarAlunoPorId(id);
+                return Ok(aluno);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok("Erro:" + ex);
+            }
 
         }
 
@@ -85,63 +86,52 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                List<string> erros = null;
                 if (model.Id > 0)
-                {                    
-                    List<MateriaAluno> materias,novasMaterias = new List<MateriaAluno>();
-                    materias = _repo.BuscarMateriaPorAluno(model.Id);
-                    novasMaterias = model.MateriaAlunos;
-                    MateriaAluno checkMateria = new MateriaAluno();
-                    int index = 0;
-                    //pegar dados completos do MateriaAluno e colocar no model para que nao seja inserido um novo
-                    foreach (var x in model.MateriaAlunos.ToList())
-                    {                           
-                            if((materias.FirstOrDefault(x => x.MateriaId == model.MateriaAlunos[index].MateriaId)) != null)
-                            {
-                            model.MateriaAlunos[index] = materias.FirstOrDefault(e => e.MateriaId == model.MateriaAlunos[index].MateriaId);
-                            }
-                        index++;
-                    }
-
-                    //verificar se materia do banco existe na materia do request e deletando se não existir
-                    foreach (var i in materias.ToList())
-                    {                       
-                            checkMateria = novasMaterias.FirstOrDefault(x => x.MateriaId == i.MateriaId);
-                            if (checkMateria == null)
-                        {
-                            if (i.MateriaId > 0)
-                            {
-                                _repo.Delete(i);
-                                await _repo.SaveChangesAsync();
-                            }
-                        } 
-                    }
-                    _repo.Update(model);
-                } else
                 {
-                    try
+                    var materiasAtuais = await _materiaService.BuscarMateriaPorAluno(model.Id);
+                    var novasMaterias = model.MateriaAlunos;
+                    var materiasParaRemover = materiasAtuais.Where(x => !novasMaterias.Contains(x));
+                    var materiasParaIncluir = novasMaterias.Where(x => !materiasAtuais.Contains(x));
+                    model.MateriaAlunos = materiasParaIncluir.ToList();
+                    foreach (var m in materiasParaRemover)
                     {
-                        _repo.Add(model);
+                        await _materiaService.RemoverMateria(m.MateriaId);
                     }
-                    catch (Exception ex)
+                   
+                    if(await _alunoService.Alterar(model))
                     {
-                        return Ok("Erro ao cadastrar: "+ex);
+                        return Ok("Aluno atualizado");
                     }
-                }
-                                
-                if (await _repo.SaveChangesAsync())
-                {
-                    return Ok("Aluno cadastrado");
+                    else
+                    {
+                        return Ok("Erro ao atualizar aluno");
+                    }
                 }
                 else
                 {
-                    return Ok("Aluno não cadastrado");
-                }
+                    try
+                    {
+                        var retornoCadastro = await _alunoService.Cadastrar(model);
+                        if (retornoCadastro != null)
+                        {
+                            return Ok("Aluno cadastrado");
+                        }
+                        else
+                        {
+                            return Ok("Aluno não cadastrado");
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok("Erro ao cadastrar: " + ex);
+                    }
+                }               
             }
             catch (Exception ex)
             {
 
-                return Ok("Erro ao cadastrar: "+ex);
+                return Ok("Erro ao cadastrar: " + ex);
             }
         }
 
@@ -151,11 +141,12 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                _repo.Update(model);
-                if (await _repo.SaveChangesAsync())
+                
+                if (await _alunoService.Alterar(model))
                 {
                     return Ok("Aluno alterado");
-                } else
+                }
+                else
                 {
                     return Ok("Aluno não alterada");
                 }

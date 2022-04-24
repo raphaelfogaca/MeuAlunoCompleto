@@ -16,8 +16,8 @@ namespace MeuAluno.Controllers
     [ApiController]
     public class AulaController : ControllerBase
     {
-        private readonly IAulaService _aulaService;
-        public AulaController(IAulaService aulaService)
+        private readonly MeuAlunoDominio.Interfaces.Services.IAulaService _aulaService;
+        public AulaController(MeuAlunoDominio.Interfaces.Services.IAulaService aulaService)
         {
             _aulaService = aulaService;
         }
