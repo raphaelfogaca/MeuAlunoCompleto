@@ -64,12 +64,12 @@ namespace MeuAluno.Controllers
         }
 
         [Route("/api/aluno/{id:int}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
 
             try
             {
-                var aluno = _alunoService.BuscarAlunoPorId(id);
+                var aluno = await _alunoService.BuscarAlunoPorId(id);
                 return Ok(aluno);
             }
             catch (Exception ex)
@@ -87,17 +87,7 @@ namespace MeuAluno.Controllers
             try
             {
                 if (model.Id > 0)
-                {
-                    var materiasAtuais = await _materiaService.BuscarMateriaPorAluno(model.Id);
-                    var novasMaterias = model.MateriaAlunos;
-                    var materiasParaRemover = materiasAtuais.Where(x => !novasMaterias.Contains(x));
-                    var materiasParaIncluir = novasMaterias.Where(x => !materiasAtuais.Contains(x));
-                    model.MateriaAlunos = materiasParaIncluir.ToList();
-                    foreach (var m in materiasParaRemover)
-                    {
-                        await _materiaService.RemoverMateria(m.MateriaId);
-                    }
-                   
+                {                   
                     if(await _alunoService.Alterar(model))
                     {
                         return Ok("Aluno atualizado");
@@ -108,9 +98,7 @@ namespace MeuAluno.Controllers
                     }
                 }
                 else
-                {
-                    try
-                    {
+                {                    
                         var retornoCadastro = await _alunoService.Cadastrar(model);
                         if (retornoCadastro != null)
                         {
@@ -119,13 +107,7 @@ namespace MeuAluno.Controllers
                         else
                         {
                             return Ok("Aluno não cadastrado");
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        return Ok("Erro ao cadastrar: " + ex);
-                    }
+                        }                   
                 }               
             }
             catch (Exception ex)

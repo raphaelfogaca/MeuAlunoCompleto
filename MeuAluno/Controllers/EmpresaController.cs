@@ -48,7 +48,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var empresa = _empresaService.BuscarEmpresaPorId(id);
+                var empresa = await _empresaService.BuscarEmpresaPorId(id);
                 return Ok(empresa);
             }
             catch (Exception)

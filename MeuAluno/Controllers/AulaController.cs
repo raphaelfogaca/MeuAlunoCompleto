@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MeuAlunoDominio.Entities;
-using MeuAlunoDominio.Interfaces.Repositories;
 using MeuAlunoDominio.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +15,8 @@ namespace MeuAluno.Controllers
     [ApiController]
     public class AulaController : ControllerBase
     {
-        private readonly MeuAlunoDominio.Interfaces.Services.IAulaService _aulaService;
-        public AulaController(MeuAlunoDominio.Interfaces.Services.IAulaService aulaService)
+        private readonly IAulaService _aulaService;
+        public AulaController(IAulaService aulaService)
         {
             _aulaService = aulaService;
         }

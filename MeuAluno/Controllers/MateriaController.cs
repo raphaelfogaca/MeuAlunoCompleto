@@ -23,11 +23,11 @@ namespace MeuAluno.Controllers
 
         // GET api/<MateriaController>/5
         [Route("/api/materiaPorEmpresa/{id:int}")]
-        public IActionResult GetByEmpresaId(int id) //buscar pelo Id da Empresa
+        public async Task<IActionResult> GetByEmpresaId(int id) //buscar pelo Id da Empresa
         {
             try
             {
-                var materias = _materiaService.BuscarMateriaPorEmpresa(id);
+                var materias = await _materiaService.BuscarMateriaPorEmpresa(id);
                 return Ok(materias);
             }
             catch (Exception ex)
@@ -38,11 +38,11 @@ namespace MeuAluno.Controllers
         }
         // GET api/<MateriaController>/5
         [Route("/api/materia/{id:int}")]
-        public IActionResult GetById(int id) //buscar pelo Id da materia
+        public async Task<IActionResult> GetById(int id) //buscar pelo Id da materia
         {
             try
             {
-                var materias = _materiaService.BuscarMateriaPorId(id);
+                var materias = await _materiaService.BuscarMateriaPorId(id);
                 return Ok(materias);
             }
             catch (Exception ex)
