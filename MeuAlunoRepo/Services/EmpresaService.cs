@@ -19,11 +19,13 @@ namespace MeuAlunoRepo.Services
 
         public EmpresaService(IEmpresaRepository repository, 
             IEnderecoService enderecoService,
-            IContratoService contratoService)
+            IContratoService contratoService,
+            IPessoaService pessoaService)
         {            
             _repository = repository;
             _enderecoService = enderecoService;
             _contratoService = contratoService;
+            _pessoaService = pessoaService;
         }
         public async Task<Empresa> BuscarEmpresaPorId(int empresaId)
         {

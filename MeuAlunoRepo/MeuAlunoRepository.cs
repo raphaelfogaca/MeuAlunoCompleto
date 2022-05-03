@@ -33,32 +33,6 @@ namespace MeuAlunoRepo
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
-     
-        public List<Aluno> BuscarAlunoPorNome(string nome)
-        {
-            IQueryable<Aluno> query = _context.Alunos.Where(a => a.Nome.Contains(nome));
-            return query.ToList();
-        }
-        public Task<Aluno[]> BuscarTodosAlunos()
-        {
-            IQueryable<Aluno> query = _context.Alunos;
-            return query.ToArrayAsync();
-        }
-        public Aluno BuscarAlunoPorId(int? id)
-        {
-            Aluno query = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            query.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == query.EnderecoId);
-            //query.MateriaAlunos = BuscarMateriaPorAluno(query.Id);
-            query.Servico = BuscarServicoPorAluno(query.ServicoId);
-            return query;
-        }
-        public Task<Aluno[]> BuscarAlunosPorEmpresaid(int empresaId)
-        {
-            IQueryable<Aluno> query = _context.Alunos.Where(x => x.EmpresaId == empresaId);
-            return query.ToArrayAsync();
-        }
-
-
         public List<Servico> BuscarServicoPorEmpresaId(int id)
         {
             IQueryable<Servico> query = _context.Servicos.Where(s => s.EmpresaId == id);

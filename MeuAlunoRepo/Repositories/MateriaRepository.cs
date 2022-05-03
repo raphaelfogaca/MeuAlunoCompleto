@@ -18,12 +18,7 @@ namespace MeuAlunoRepo.Repositories
         {
             var materias = await _context.Materias.Where(a => a.EmpresaId == id).ToListAsync();
             return materias;
-        }
-        public async Task<List<MateriaAluno>> BuscarMateriaPorAluno(int id)
-        {
-            var materias = await _context.MateriaAluno.Where(m => m.AlunoId == id).ToListAsync();
-            return materias;
-        }
+        }        
         public async Task<Materia> BuscarMateriaPorId(int id)
         {
             return await _context.Materias.FirstAsync(s => s.Id == id);

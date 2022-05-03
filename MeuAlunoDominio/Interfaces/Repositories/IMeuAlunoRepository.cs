@@ -13,13 +13,7 @@ namespace MeuAlunoDominio.Interfaces.Repositories
         void Add<T>(T Entity) where T : class;
         void Update<T>(T Entity) where T : class;
         void Delete<T>(T Entity) where T : class;
-        Task<bool> SaveChangesAsync();
-
-        List<Aluno> BuscarAlunoPorNome(string nome);
-        Aluno BuscarAlunoPorId(int? id);
-        Task<Aluno[]> BuscarTodosAlunos();
-        Task<Aluno[]> BuscarAlunosPorEmpresaid(int empresaId);
-
+        Task<bool> SaveChangesAsync();    
         List<Servico> BuscarServicoPorEmpresaId(int id);
         Task<Servico[]> BuscarTodosServicos();
         Servico BuscarServicoPorId(int id);

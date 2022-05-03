@@ -1,4 +1,5 @@
 ﻿using MeuAlunoDominio.Entities;
+using MeuAlunoDominio.Interfaces.Repositories;
 using MeuAlunoDominio.Interfaces.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,24 +8,42 @@ namespace MeuAlunoRepo.Services
 {
     public class AulaService : IAulaService
     {
-        private readonly IAulaService _service;
-        public AulaService(IAulaService service)
+        private readonly IAulaRepository _serviceRepository;
+        public AulaService(IAulaRepository serviceRepository)
         {
-            _service = service;
+            _serviceRepository = serviceRepository;
         }
         public async Task<List<Aula>> BuscarAulaPorEmpresa(int id)
         {
-            return await _service.BuscarAulaPorEmpresa(id);
+            return await _serviceRepository.BuscarAulaPorEmpresa(id);
         }
 
         public async Task<Aula> BuscarAulaPorId(int id)
         {
-            return await _service.BuscarAulaPorId(id);
+            return await _serviceRepository.BuscarAulaPorId(id);
         }
 
-        public Task<Aula> Cadastrar(Aula aula)
+        public async Task<Aula> Cadastrar(Aula aula)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                if (aula.Id == 0)
+                {
+                    _serviceRepository.Add(aula);
+
+                }
+                else
+                {
+                    _serviceRepository.Update(aula);
+                }
+                await _serviceRepository.SaveChangesAsync();
+                return aula;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
+            
         }
     }
 }

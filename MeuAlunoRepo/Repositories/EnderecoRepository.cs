@@ -12,7 +12,7 @@ namespace MeuAlunoRepo.Repositories
         MeuAlunoContext _context;
         public EnderecoRepository(MeuAlunoContext context) : base(context)
         {
-            context = _context;
+            _context = context;
         }
 
         public async Task<Endereco> BuscarPorId(int enderecoId)
@@ -20,5 +20,6 @@ namespace MeuAlunoRepo.Repositories
             var endereco = await _context.Enderecos.Where(x => x.Id == enderecoId).FirstAsync();
             return endereco;
         }
+
     }
 }

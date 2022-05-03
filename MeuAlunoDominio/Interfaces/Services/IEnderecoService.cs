@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace MeuAlunoDominio.Interfaces.Services
 {
-    public interface IEnderecoService 
+    public interface IEnderecoService
     {
-        Task<Endereco> BuscarPorId(int enderecoId);
+        Task<Endereco> BuscarPorId(int enderecoId);        
     }
 }

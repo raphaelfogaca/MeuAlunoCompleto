@@ -1,5 +1,6 @@
 ﻿
 using MeuAlunoDominio.Entities;
+using MeuAlunoDominio.Interfaces.Repositories;
 using MeuAlunoDominio.Interfaces.Services;
 using System.Threading.Tasks;
 
@@ -7,9 +8,17 @@ namespace MeuAlunoRepo.Services
 {
     public class EnderecoService : IEnderecoService
     {
-        public Task<Endereco> BuscarPorId(int enderecoId)
+        private readonly IEnderecoRepository _enderecoRepository;
+
+        public EnderecoService(IEnderecoRepository enderecoRepository)
         {
-            throw new System.NotImplementedException();
+            _enderecoRepository = enderecoRepository;
         }
+
+        public async Task<Endereco> BuscarPorId(int enderecoId)
+        {
+            return await _enderecoRepository.BuscarPorId(enderecoId);
+        }
+               
     }
 }
