@@ -17,7 +17,7 @@ namespace MeuAluno.Controllers
         
         public PessoaController(IPessoaService pessoaService)
         {
-            pessoaService = _pessoaService;
+            _pessoaService = pessoaService;
         }
         // GET: Pessoa        
         [HttpGet]
