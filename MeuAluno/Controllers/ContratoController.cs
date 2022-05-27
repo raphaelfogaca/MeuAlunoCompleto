@@ -38,8 +38,7 @@ namespace MeuAluno.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ContratoModelo contrato)
         {
-            
-            return Ok("text");
+            return Ok(await _contratoService.AlterarContrato(contrato));
         }
 
         // PUT api/<ContratoController>/5
