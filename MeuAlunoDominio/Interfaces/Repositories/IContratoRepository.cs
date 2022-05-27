@@ -10,5 +10,7 @@ namespace MeuAlunoDominio.Interfaces.Repositories
         Task<Contrato> BuscarContratoPorEmpresaId(int empresaId);
         Task<Contrato> BuscarContratoModelo();
         Task<Contrato> CadastrarContratoModelo(Contrato contrato);
+        Task<Contrato> BuscarPorId(int id);
+
     }
 }

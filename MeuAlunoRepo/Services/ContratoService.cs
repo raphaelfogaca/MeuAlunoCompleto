@@ -5,6 +5,7 @@ using MeuAlunoDominio.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MeuAlunoDominio.Interfaces.Repositories;
+using System.Linq;
 
 namespace MeuAlunoRepo.Services
 {
@@ -17,6 +18,27 @@ namespace MeuAlunoRepo.Services
             _repo = repo;
             _clausulaService = clausulaService;
         }
+
+        public async Task<ContratoModelo> AlterarContrato(ContratoModelo contrato)
+        {       
+            var clausulasExistentes = await _clausulaService.BuscarClausulasModelo(contrato.ContratoId);
+
+            foreach(var clausula in clausulasExistentes)
+            {
+                if(contrato.Clausulas.Where(x => x.Id == clausula.Id).Any())
+                {
+                    clausula.Ativa = true;
+                    clausula.Descricao = contrato.Clausulas.First(x => x.Id == clausula.Id).Descricao;
+                }
+                else
+                {
+                    clausula.Ativa = false;
+                }
+            }            
+            contrato.Clausulas = await _clausulaService.CadastrarClausulas(clausulasExistentes);
+            return contrato;
+        }
+
         public async Task<ContratoModelo> BuscarContratoModelo()
         {
             var contrato = _repo.BuscarContratoModelo();

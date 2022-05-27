@@ -23,16 +23,18 @@ namespace MeuAlunoRepo.Repositories
 
         public async Task<Contrato> BuscarContratoPorEmpresaId(int empresaId)
         {
-            var contrato = await _context.Contratos.Where(x => x.EmpresaId == empresaId).ToListAsync();
-
-            return contrato.FirstOrDefault();
+            return await _context.Contratos.Where(x => x.EmpresaId == empresaId).FirstAsync();          
         }
 
         public async Task<Contrato> BuscarContratoModelo()
         {            
-            var contrato = await _context.Contratos.Where(x => x.EmpresaId == 1).ToListAsync();           
-            
-            return contrato.FirstOrDefault();
+            return await _context.Contratos.Where(x => x.EmpresaId == 1).FirstAsync();  
+           
+        }
+
+        public async Task<Contrato> BuscarPorId(int id)
+        {
+            return await _context.Contratos.Where(x => x.Id == id).FirstAsync();
         }
     }
 }

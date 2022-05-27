@@ -26,9 +26,12 @@ namespace MeuAlunoRepo.Services
         public async Task<List<Clausula>> CadastrarClausulas(List<Clausula> clausulaList)
         {
             List<Clausula> newClausulas = new List<Clausula>();
-            foreach(var clausula in clausulaList)
+            foreach (var clausula in clausulaList)
             {
-                _repo.Add(clausula);
+                if (clausula.Id == 0)
+                    _repo.Add(clausula);
+                else
+                    _repo.Update(clausula);
                 newClausulas.Add(clausula);
             }
             await _repo.SaveChangesAsync();
