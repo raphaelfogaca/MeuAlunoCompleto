@@ -14,5 +14,6 @@ namespace MeuAlunoDominio.Interfaces.Services
         Task<ContratoModelo> BuscarContratoPorEmpresaId(int empresaId);
         Task<ContratoModelo> BuscarContratoModelo();
         Task<ContratoModelo> AlterarContrato(ContratoModelo contrato);
+
     }
 }

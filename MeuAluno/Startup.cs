@@ -84,6 +84,7 @@ namespace MeuAluno
             services.AddScoped<IFinanceiroRepository, FinanceiroRepository>();
             services.AddScoped<IAlunoRepository, AlunoRepository>();
             services.AddScoped<IMateriaAlunoRepository, MateriaAlunoRepository>();
+            services.AddScoped<IServicoRepository, ServicoRepository>();
 
 
             //services
@@ -98,6 +99,8 @@ namespace MeuAluno
             services.AddScoped<IFinanceiroService, FinanceiroService>();
             services.AddScoped<IAlunoService, AlunoService>();
             services.AddScoped<IMateriaAlunoService, MateriaAlunoService>();
+            services.AddScoped<IContratoAlunoService, ContratoAlunoService>();
+            services.AddScoped<IServicoService, ServicoService>();
 
             services.AddCors();
 

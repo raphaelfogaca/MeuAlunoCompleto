@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30320.27
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuAluno", "MeuAluno.csproj", "{3098EFBE-024E-4403-98F8-194C400E2A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeuAluno", "MeuAluno.csproj", "{3098EFBE-024E-4403-98F8-194C400E2A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuAlunoDominio", "..\MeuAlunoDominio\MeuAlunoDominio.csproj", "{6ED3299E-287D-4FB2-84C9-EB2B121DBF5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeuAlunoDominio", "..\MeuAlunoDominio\MeuAlunoDominio.csproj", "{6ED3299E-287D-4FB2-84C9-EB2B121DBF5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeuAlunoRepo", "..\MeuALunoRepo\MeuAlunoRepo.csproj", "{65C152E7-898A-4558-9EF4-9C3AF1B8854A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeuAlunoRepo", "..\MeuALunoRepo\MeuAlunoRepo.csproj", "{65C152E7-898A-4558-9EF4-9C3AF1B8854A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

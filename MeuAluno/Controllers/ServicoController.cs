@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MeuAlunoDominio;
 using MeuAlunoDominio.Entities;
 using MeuAlunoDominio.Interfaces.Repositories;
+using MeuAlunoDominio.Interfaces.Services;
 using MeuAlunoRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,25 +19,16 @@ namespace MeuAluno.Controllers
     [ApiController]
     public class ServicoController : ControllerBase
     {
-        private readonly IMeuAlunoRepository _repo;
-        public ServicoController(IMeuAlunoRepository repo)
+        private readonly IServicoService _servicoService;
+        public ServicoController(IServicoService servicoService)
         {
-            _repo = repo;
+            _servicoService = servicoService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var servicos = await _repo.BuscarTodosServicos();
-                return Ok(servicos);
-            }
-            catch (Exception ex)
-            {
-
-                return Ok("Erro:" + ex);
-            }
+            throw new NotImplementedException();
 
         }
 
@@ -46,7 +38,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var servicos = _repo.BuscarServicoPorId(id);
+                var servicos = _servicoService.BuscarServicoPorId(id);
                 return Ok(servicos);
             }
             catch (Exception ex)
@@ -61,7 +53,7 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                var servicos = _repo.BuscarServicoPorEmpresaId(id);
+                var servicos = _servicoService.BuscarServicoPorEmpresaId(id);
                 return Ok(servicos);
             }
             catch (Exception ex)
@@ -77,65 +69,13 @@ namespace MeuAluno.Controllers
         {
             try
             {
-                model.Valor /= 100;
-                if(model.ValorMulta != null && model.ValorMulta > 0)
-                {
-                    model.ValorMulta /= 100;
-                }
-                if (model.Id > 0)
-                {
-                    List<ServicoAula> servicoAulas,servicoAulasDoServico = new List<ServicoAula>();
-                    servicoAulasDoServico = _repo.BuscarServicoAula(model.Id);
-                    servicoAulas = model.ServicosAulas;
-                    int index = 0;
-                    ServicoAula servico = new ServicoAula();
-                    foreach (var x in model.ServicosAulas.ToList())
-                    {   //buscar serivocAula e atualizar Id no model
-                        if ((servicoAulasDoServico.FirstOrDefault(x => x.AulaId == model.ServicosAulas[index].AulaId)) != null)
-                        {
-                            model.ServicosAulas[index] = servicoAulasDoServico.FirstOrDefault(x => x.AulaId == model.ServicosAulas[index].AulaId);
-                            model.ServicosAulas[index].Id = servicoAulas[index].Id;
-                        }
-                        index++;
-                    }
-
-                    foreach (var servicoaula in servicoAulasDoServico)
-                    {                        
-                        if ((servicoAulas.FirstOrDefault(x => x.Id == servicoaula.Id)) == null)
-                        {                           
-                            _repo.Delete(servicoaula);
-                            await _repo.SaveChangesAsync();
-                        }
-                    }
-
-                    _repo.Update(model);
-                    if(await _repo.SaveChangesAsync())
-                    {
-                        return Ok("Serviço atualizado");
-                    }
-                    else
-                    {
-                        return Ok("Serviço não atualizado");
-                    }
-                   
-                }
-                else
-                {
-                    _repo.Add(model);
-                    if (await _repo.SaveChangesAsync())
-                    {
-                        return Ok("Serviço cadastrado");
-                    }
-                    else
-                    {
-                        return Ok("Serviço não cadastrado");
-                    }
-                }
-
+                await _servicoService.CadastrarServico(model);
+                return Ok("Serviço cadastrado");
             }
+
+
             catch (Exception ex)
             {
-
                 return Ok("Erro ao cadastrar: " + ex);
             }
 

@@ -14,18 +14,7 @@ namespace MeuAlunoDominio.Interfaces.Repositories
         void Update<T>(T Entity) where T : class;
         void Delete<T>(T Entity) where T : class;
         Task<bool> SaveChangesAsync();    
-        List<Servico> BuscarServicoPorEmpresaId(int id);
-        Task<Servico[]> BuscarTodosServicos();
-        Servico BuscarServicoPorId(int id);
-        List<ServicoAula> BuscarServicoAula(int id);
 
-        
-       
-       
-        
-        
-        
-        
     }
 }
 
